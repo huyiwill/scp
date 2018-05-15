@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<meta http-equiv="Cache-Control" content="no-transform" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<title>{if condition="$data.exam_name"}{$data.exam_name}{else/}闪测评{/if}</title>
+	<link rel="stylesheet" href="__CSS__/lui-modal.css">
+	<style>
+		*{ -webkit-tap-highlight-color: rgba(0,0,0,0);-webkit-tap-highlight-color: transparent;}  
+		body {margin: 0;font-family: "微软雅黑";}
+		header {padding: 15px;position: fixed;width: calc(100% - 30px);background-color: #fff;top: 0;z-index: 10;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;}
+		.logo-main {display: inline-block;}
+		.default-logo {width: 30px;height: 30px;display: inline-block;}
+		.default-logo img {width: 100%;vertical-align: middle;}
+		.organ-logo {width: 30px;height: 30px;display: inline-block;}
+		.organ-logo img {width: 100%;vertical-align: middle;}
+		.kulvar {display: inline-block;width: 1px;margin: 0 1px;height: 20px;background-color: #aaa;vertical-align: middle;}
+		.organ-name {display: inline-block;font-size: 18px;color: #25272c;vertical-align: middle;}
+		.exam-name {display: inline-block;font-size: 16px;vertical-align: middle;}
+		.exam-name p {width: 100%;color: #4782f6;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;margin: 0;vertical-align: middle;display: inline-block;}
+		footer {height: 45px;line-height: 45px;text-align: center;background-color: #2f2d30;position: fixed;width: 100%;bottom: 0;}
+		footer span {font-size: 16px;color: #fff;margin: 0 5px;}
+		.tel-text {color: #4171d0;text-decoration: none;font-size: 14px;margin: 0 5px;}
+		@media (max-width: 320px) {
+			header {padding: 12px 15px;}
+			.default-logo {width: 26px;height: 26px;}
+			.organ-logo {width: 26px;height: 26px;}
+			.organ-name {font-size: 16px;}
+			.exam-name {font-size: 14px;}
+			footer {height: 40px;line-height: 40px;font-size: 14px;}
+		}
+	</style>
+	{block name="css"}{/block}
+	<script>
+		var _hmt = _hmt || [];
+		(function() {
+			var hm = document.createElement("script");
+			hm.src = "https://hm.baidu.com/hm.js?f6b06c4cb3e837682fc89a82b8838eaa";
+			var s = document.getElementsByTagName("script")[0]; 
+			s.parentNode.insertBefore(hm, s);
+		})();
+	</script>
+</head>
+<body>
+	<header>
+		<div class="logo-main">
+			{if condition="$org_info.level LT 3"}
+			<div class="default-logo">
+				<img src="__UPLOAD__/default-logo-48.png" />
+			</div>
+				{if condition="$org_info.level GT 1"}
+				<div class="kulvar"></div>
+				{/if}
+			{/if}
+			{if condition="$org_info.level GT 1"}
+			<div class="organ-logo">
+				<img src="{$org_info.logo}" />
+			</div>
+			{/if}
+		</div>
+		<div class="organ-name">{$org_info.name}</div>
+		{if condition="$data.exam_name"}
+		<div class="exam-name">
+			- <p>{$data.exam_name}</p>
+		</div>
+		{/if}
+	</header>
+	
+	{block name="body"}{/block}
+	
+	{if condition="$org_info.level LT 4"}
+	<footer><span>软云科技</span><span>商务洽谈</span><a href="tel:400-182-6266" class="tel-text">400-182-6266</a></footer>
+	{/if}
+</body>
+<script src="__JS__/jquery.min.js"></script>
+<script src="__JS__/lui-modal.js"></script>
+{block name="js"}{/block}
+{block name="script"}{/block}
+<script>
+	$(function(){
+		var winW = $(window).width();
+		var logoW = $('.logo-main').width();
+		var nameW = $('.organ-name').width();
+		$('.exam-name').css('width',winW - logoW - nameW - 55);
+	})
+</script>
+</html>

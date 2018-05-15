@@ -1,0 +1,254 @@
+{extend name="webbase" /}
+{block name="css"}
+<style>
+	blockquote,body,button,dd,div,dl,dt,fieldset,form,h1,h2,h3,h4,h5,h6,hr,input,legend,li,ol,p,pre,td,textarea,th,ul{margin:0;padding:0}
+	dd,dl,dt,li,ol,ul{list-style:none;list-style-type:none}
+	body{font-size:14px; font-family:"微软雅黑";}
+	.an-box{width:100%;min-width:1200px;margin-top:60px;height:auto;position:relative;}
+	.an-box .content{width:1200px;position:relative;margin:0 auto; height:auto;}
+	.an-b-left{width:890px;position:relative;padding:20px;box-shadow:0 0 6px rgba(0,0,0,.2); margin:5px 5px 20px 5px;}
+	.an-b-left .an-title{background:#f1f1f1;line-height:48px;overflow:hidden;padding:0 10px}
+	.an-b-left .an-title .an-t-left{float:left;font-size:16px;color:#333}
+	.an-b-left .an-title .an-t-right{float:right;font-size:14px}
+	.an-b-left .an-title .an-t-right.warn-color{color:#fa8406}
+	.an-b-left .sub-box{width:100%;box-sizing:border-box;padding:20px 0;margin-top:10px;border:1px solid #dcdcdc}
+	.an-b-left .sub-box .sub-title{line-height:24px;margin-bottom:10px;font-size:14px;color:#333;display:flex;justify-content:flex-start; align-items: center; flex-wrap: wrap;}
+	.sortsboxs{position: relative; padding-left: 18px; box-sizing: border-box;}
+	.sortspan{ position: absolute;left:0px; top:0; display:flex;justify-content:flex-start; align-items: center; height: 100%; width: 14px; font-size: 14px; }
+	.an-b-left .sub-box .sub-top{padding:0 10px;width:100%;box-sizing:border-box}
+	.an-b-left .sub-box .options{box-sizing:border-box;padding:0 20px}
+	.an-b-left .sub-box .options li{margin-top:10px;line-height:1;color:#666;margin-top:20px}
+	.an-b-left .sub-box .reply{padding:20px 20px 0 20px;box-sizing:border-box;width:100%;overflow:hidden;margin-top:20px;border-top:1px solid #dcdcdc}
+	.an-b-left .sub-box .reply li{float:left;width:40px;height:40px;line-height:40px;text-align:center;border-radius:50%;border:1px solid #dcdcdc;cursor:pointer;color:#666;margin-right:20px}
+	.an-b-left .sub-box .reply li.active,.an-b-left .sub-box .reply li:hover{background:#dbede0;border:1px solid #5fb878;color:#5fb878}
+	.an-b-right{float:right;width:240px;margin-top:20px;box-shadow:0 0 6px rgba(0,0,0,.2)}
+	.an-b-right .an-title{border-bottom:1px solid #dcdcdc;line-height:47px;text-align:center;color:#333;font-size:16px;}
+	.an-b-right .an-choice{width:100%;box-sizing:border-box;padding:0 10px 10px 10px;overflow:hidden}
+	.an-b-right .an-choice li{float:left;margin-top:10px;width:36px;height:36px;cursor:pointer;color:#666;line-height:36px;text-align:center;box-sizing:border-box;border:1px solid #dcdcdc;margin-right:10px}
+	.an-b-right .an-choice li:nth-child(5n){margin-right:0}
+	.an-b-right .an-choice li.active{border:1px solid #5fb878;color:#5fb878}
+	.an-b-right .an-choice li.active a{color:#5fb878}
+	.an-b-right .an-choice li:hover{border:1px solid #5fb878;color:#5fb878;}
+	.an-b-right .an-choice li:hover a{color:#5fb878}
+	.an-b-right .an-choice li a{ width: 100%; height: 100%; color: #666; font-size: 14px; text-decoration: none; display:block;}
+	.an-b-right .an-choice li.isdo{background:#dbede0;border:1px solid #5fb878;color:#5fb878}
+	.an-b-right .an-choice li.isdo a{color:#5fb878;}
+	.an-b-right .choice-btn{width:220px;padding:0 10px;box-sizing:border-box;border:1px solid #5fb878;background:#fff;font-size:16px;line-height:35px;outline:0;margin:0 10px 10px 10px;cursor:pointer;color:#5fb878; font-family:"微软雅黑";}
+	#portamento_container{ position:absolute; right:5px; top:0px; margin-top:0px;}
+    #portamento_container #sidebar {float:none; position:absolute;}
+    #portamento_container #sidebar.fixed {position:fixed;}
+	.demo-class .layui-layer-btn{ background:#f1f1f1 !important; border-top:1px solid #dcdcdc;}
+	.layui-tip-p{ width:100%; text-align:center; color:#333; font-size:14px; width:100%; display:block;}
+	.layui-layer-btn0{ background:#1aa194 !important;}
+	.layui-layer-btn{ padding-bottom:5px !important;}
+	.layui-layer-btn a{ height:36px !important; line-height:36px !important;}
+	.layui-divs{ width:100%; height:auto; overflow:hidden;}
+	.layui-divs h4{ width:100%; text-align:center; font-size:12px; color:#999; font-weight:normal; text-align:center; margin:20px auto 16px auto;}
+	._input{ width:300px; height:38px; padding:0px 10px; box-sizing:border-box; border:1px solid #dcdcdc; color:#ccc; font-size:14px; outline-style:none; display:block; margin:0 auto 10px auto;font-family:"微软雅黑";}
+</style>
+{/block}
+{block name="body"}
+ <div class="an-box">
+    <div class="content">
+        <div class="an-b-left">
+            <div class="an-title">
+                <div class="an-t-left">
+                    {$data.exam_name}
+                </div>
+                <div class="an-t-right warn-color">
+                    {if condition="$data.exam_stauts eq 1"}
+                    （<span>待上架</span>）
+                    {elseif condition="$data.exam_stauts eq 3"/}
+                    （<span>已下架</span>）
+                    {elseif condition="$data.exam_stauts eq 4"/}
+                    （<span>已删除</span>）
+                    {elseif condition="$data.exam_stauts eq 2"/}
+                    （<span>已上架</span>） 
+                    {/if}
+                </div>
+            </div>
+            {volist name="data.list" id="vo" key="sort"}
+            <div class="sub-box" id="sort_{$sort}" data-questionid="{$vo.QuestionId}">
+                <div class="sub-top">
+
+                    <dl class="item_dl">
+                        <dt class="sortpadd" style="color:#666;"><span class="sort_tag">{$sort}.</span> {$vo.QuestionContent|deletep}</dt>
+                    </dl>
+                    
+                    <ul class="options">
+                        {volist name="vo.Options" id="voitem" key="k"}
+                            <li class="sortsboxs" style="padding-left: 20px;"><span class="sortspan">{$voitem.QuestionOptionId}：</span>{$voitem.QuestionOptionText}</li>
+                        {/volist}
+                    </ul>
+                </div>
+                <ul class="reply">
+                    <li data-option="1">A</li>
+                    <li data-option="2">B</li>
+                    <li data-option="3">C</li>
+                    <li data-option="4">D</li>
+                </ul>
+            </div>
+            {/volist}
+        </div>
+        
+        <div class="an-b-right" id="sidebar">
+            <div class="an-title">答题卡</div>
+            <ul class="an-choice"></ul>
+            <button type="button" class="choice-btn">提交</button>
+        </div>
+    </div>
+ </div>
+ <input type="hidden" value="{$data.examinations_id}" id="examinations_id">
+{/block}
+{block name="js"}
+<script src="__JS__/portamento.js"></script>
+{/block}
+{block name="script"}
+
+<script>
+	$('#sidebar').portamento({disableWorkaround: true,gap:30,wrapper:$('.an-box')});
+	var exam_num  = '{$data.exam_num}';
+	var status    = '{$data.status}';
+	var is_verify = '{$data.is_verify}'; // 2.填写后才能查看测评 1.填写后才能开始答题 0.不要求
+	var answer_name = '{$answer_name}';
+	var answer_mobile = '{$answer_mobile}';
+	var isdo  = 0; //已做多少题
+	var Answer = {1:'A',2:'B',3:'C',4:'D'};
+	var answerList = new Array();
+	exam_num = parseInt(exam_num);
+	if(parseInt(is_verify)==1 && (answer_name == '' || answer_mobile == '')){
+		popUserMobile();
+	}
+	$(document).ready(function(e) {
+        initTmSort();
+		// 选题
+		$('body').on("click",'.an-choice li',function(){
+			$('.an-choice li').removeClass('active');
+			$(this).addClass('active');
+		})
+		// 选择答案
+		$('.reply li').click(function(){
+			var option = parseInt($(this).data('option'));
+			var parent = $(this).parent().parent();
+			var _index = $(parent).index('.sub-box');
+			$(this).parent().find('li').removeClass('active');
+			$(this).addClass('active');
+			$('.an-choice li').eq(_index).addClass('isdo');
+			var currAnswer = answerList[_index];
+			currAnswer.StudentAnswer = Answer[option];
+			answerList[answerList] = currAnswer;
+			isdo++;
+		})
+		// 提交
+		$('.choice-btn').click(function(){
+			if(parseInt(is_verify)==1 && (answer_name == '' || answer_mobile == '')){
+				popUserMobile();return false;
+			}
+			if(isdo<exam_num){
+					layer.open({
+					skin:'demo-class',
+					offset: 'auto',
+					title: '提示',
+					btn: ['确定','取消'],
+					content: '<p class="layui-tip-p">您还没有做完题目，确定要提交吗？</p><p class="layui-tip-p">（未作答的题目记为错题）</p>',
+					area: ['320px', '185px'],
+					yes: function(index){
+						layer.close(index);
+						submitAnswer();
+					}
+				});
+			}else{
+				submitAnswer();
+			}
+		})
+    });
+	// 提交答案
+	function submitAnswer(){
+		
+		var loading = layer.load(1,{shade: [0.5,'#000']})
+		var examinations_id = $("#examinations_id").val();		
+		var examinations_result = JSON.stringify(answerList);
+		
+		
+		$.ajax({
+			url: "{:url('index/Index/result_info')}",
+			type: "post",
+			dataType: "json",
+			cache: false,
+			data: {
+				examinations_result: examinations_result,
+				examinations_id: examinations_id
+			},
+			success: function (info) {
+				layer.close(loading);
+				console.log(info);
+				if(info.status == 1){
+					setTimeout(function(){
+						location.href = '{:url("index/index/exam_result")}'+'?eid='+info.eid;
+					},500);
+				}else{
+					layer.msg(info.msg); 
+				}
+			}
+		});
+	}
+	// 初始化答题序列
+	function initTmSort() {
+		for(var i=1;i<=exam_num;i++){
+			var Question_Id = $('.sub-box').eq(i-1).data('questionid');
+			answerList.push({QuestionId:Question_Id,StudentAnswer:''});
+			$('.an-choice').append('<li class="'+(i==1?'active':'')+'"><a href="#sort_'+i+'">'+i+'</li></a>');
+		}
+	}
+	// 弹出联系人 手机号
+	function popUserMobile(){
+		var verifyTip = layer.open({
+			type:1,
+			closeBtn:0,
+			skin:'demo-class',
+			offset: 'auto',
+			title: '提示',
+			btn: ['开始答题'],
+			content: '<div class="layui-divs"><h4>请填写联系方式，即刻开始在线答题</h4><input type="text" placeholder="请输入姓名" class="_input answer_name"><input type="text" placeholder="请输入手机号码，必填" class="_input answer_mobile"></div>',
+			area: ['320px', '240px'],
+			yes: function(index){
+				answer_name   = $('.answer_name').val();
+				answer_mobile = $('.answer_mobile').val();
+				if(answer_name==''){
+				  layer.tips('请输入姓名', '.answer_name');return false;
+				}
+				if ( answer_name.length > 50 ) {
+				  layer.tips('最大长度为50字符', '.answer_name');return false;
+				} 
+				if(answer_mobile==''){
+				  layer.tips('请输入手机号码', '.answer_mobile');return false;
+				}
+				if(!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(answer_mobile))){ 
+				  layer.tips("请输入正确的手机号码", '.answer_mobile'); return false; 
+				} 
+				var loading = layer.load(1,{shade: [0.5,'#000']})
+				$.ajax({
+					url: "{:url('index/Index/save_user')}",
+					type: "post",
+					dataType: "json",
+					cache: false,
+					data: {
+						answer_name: answer_name,
+						answer_mobile: answer_mobile
+					},
+					success: function (info) {
+						layer.close(loading);
+						if(info.status == 1){
+							layer.close(verifyTip);
+						}else{
+							layer.msg(info.msg); 
+						}
+					}
+				});
+			}
+		})
+		$(".layui-layer-content").height(179);
+	}
+</script>
+{include file="weixin" /}
+{/block}

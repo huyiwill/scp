@@ -1,0 +1,135 @@
+{extend name="base" /}
+{block name="css"}
+<style>
+
+</style>
+{/block}
+{block name="body"}
+<div class="ui-mask">
+ <img src="__IMAGES__/tree.png" width="100%">
+</div>
+
+<div class="layui-body" style="padding-right:10px;">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class=""><a href="{:url('orgadmin/examination/index')}">题集列表</a></li>
+            <li class=""><a href="{:url('orgadmin/examination/statistics','id='.$id)}">答题统计</a></li>
+            <li class="layui-this">作业测评</li>
+        </ul>
+        
+<div class="tree_box" style="margin-top:10px;">
+ 	<div class="tree_title"><b></b>知识点掌握分析</div>
+    <ul class="tree_ul">
+       {if condition="$tree neq ''"}
+       {volist name="tree" id="te" key="t"}
+    	<li class="node_1">
+        	<h3>
+             <i class="blank_1"></i><img class="tree_btn" src="__IMAGES__/ry_minus.png" />{$te.KnowledgePointName}
+             {if condition="$te.HasEvaluation eq 1"}<div class="tree_right"><div class="rate_bar"><span style="width:{:intval($te.Score)}%"></span></div>平均掌握：{:round($te.Score, 2)}%</div>{/if}
+            </h3>
+            {if condition="count($te['Children']) gt 0"}
+            {volist name="te.Children" id="tc" key="t2"}
+        	<ul class="tree_ul">
+            
+            	<li class="node_2">
+                	<h3 class="node_2">
+                        <i class="blank_2"></i>
+                    	<img class="tree_btn" src="__IMAGES__/ry_minus.png" />{$tc.KnowledgePointName}
+                        {if condition="$tc.HasEvaluation eq 1"}<div class="tree_right"><div class="rate_bar"><span style="width:{:intval($tc.Score)}%"></span></div>平均掌握：{:round($tc.Score, 2)}%</div>{/if}
+                    </h3>
+                    {if condition="count($tc['Children']) gt 0"}
+                    <ul class="tree_ul">
+                      {volist name="tc.Children" id="cc" key="t3"}
+                        <li class="node_3">
+                        	<h3 class="node_3"><i class="blank_3"></i><img class="tree_btn" src="__IMAGES__/ry_minus.png" />{$cc.KnowledgePointName}
+                            {if condition="$cc.HasEvaluation eq 1"}<div class="tree_right"><div class="rate_bar"><span style="width:{:intval($cc.Score)}%"></span></div>平均掌握：{:round($cc.Score, 2)}%</div>{/if}
+                            </h3>
+                            {if condition="count($cc['Children']) gt 0"}
+                        	<ul class="tree_ul">
+                              {volist name="cc.Children" id="ccc" key="t4"}
+                            	<li class="node_4">
+                                	<h3 class="node_4">
+                                        <i class="blank_4 no_node"></i>{$ccc.KnowledgePointName}
+                                        {if condition="$ccc.HasEvaluation eq 1"}<div class="tree_right"><div class="rate_bar"><span style="width:{:intval($ccc.Score)}%"></span></div>平均掌握：{:round($ccc.Score, 2)}%</div>{/if}
+                                    </h3>
+                                </li>
+                               {/volist}
+                            </ul>
+                            {/if}
+                        </li>
+                       {/volist}
+                    </ul>
+                   {/if}
+                </li>
+
+            </ul>
+            {/volist}
+            {/if}
+        </li>
+        {/volist}
+        {/if}
+    </ul>
+ </div>
+
+        
+    </div>
+
+</div>
+
+
+{/block}
+{block name="js"}
+ <script type="text/javascript">
+ if( level < 3 ) { //不能看
+    $(".ui-mask").show();
+	$(".layui-body").hide().remove('*');
+	layer.open({
+		type: 1,
+		title: '用户升级',
+		content: '<div class="ui-update">您当前的等级为 <b>'+levname+'</b><br/>升级到<b>钻石用户</b>才能使用该功能<br/>洽谈请联系软云商务 <b>400-182-6266</b></div>',
+		area: ['300px', '200px'],
+		cancel: function(){ 
+		  window.history.go(-1);
+        }
+	});
+ }
+ $('.tree_ul:eq(0) li:last h3').css("border-bottom",'none');
+ $(document).ready(function(e) {
+	$('li.node_1').each(function(index, element) {
+		if($(this).find('li').length>0){
+			var h= ($(this).find('li:visible').length-$(this).find('li.node_2:last li').length)*51-10;
+			$(this).append('<i class="line_v_long_1" style="height:'+h+'px;width:1px; background:#dcdcdc; position:absolute; left:23px; top:36px; "></i>');
+			$(this).find('h3.node_2').append('<i class="line_h" style="width:13px; background:#dcdcdc; height:1px; position:absolute; left:23px; top:25px;"></i>');
+		}
+    });
+	$('li.node_2').each(function(index, element) {
+		if($(this).find('li.node_3').length>0){
+			var h= ($(this).find('li:visible').length-$(this).find('li.node_3:last li').length)*51-10;
+			$(this).append('<i  style="height:'+h+'px;width:1px; background:#dcdcdc;position:absolute; left:43px; top:36px;"></i>');
+			$(this).find('h3.node_3').append('<i class="line_h" style="width:13px; background:#dcdcdc; height:1px; position:absolute; left:44px; top:25px;"></i>');
+		}
+    });
+	$('li.node_3').each(function(index, element) {
+		if($(this).find('li.node_4').length>0){
+			var h= ($(this).find('li:visible').length-$(this).find('li:last li').length)*51-10;
+			$(this).append('<i  style="height:'+h+'px;width:1px; background:#dcdcdc;position:absolute; left:64px; top:36px;"></i>');
+			$(this).find('h3.node_4').append('<i class="line_h" style="width:13px; background:#dcdcdc; height:1px; position:absolute; left:64px; top:25px;"></i>');
+		}
+    });
+	// 展开
+	$('.tree_btn').click(function(){
+		var _pthis = $(this).parent();
+		if(_pthis.nextAll().length>0){
+			if(_pthis.nextAll().is(":visible")){
+				$(this).attr('src','__IMAGES__/ry_add.png');
+				_pthis.nextAll().hide();
+			}else{
+				$(this).attr('src','__IMAGES__/ry_minus.png');
+				_pthis.nextAll().show();
+			}
+		}
+	})
+ });
+ </script>
+{/block}

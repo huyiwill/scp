@@ -1,0 +1,138 @@
+{extend name="base" /}
+{block name="body"}
+<style>
+#portamento_container{ position:absolute; left:0; top:0;}
+/*题集讲解*/
+.explain_box{ width:100%; height:auto; overflow:hidden; padding-left:40px; box-sizing:border-box; position:relative;}
+.sort_box{ width:32px; height:auto; border:1px solid #dcdcdc; overflow:hidden; box-sizing:border-box; position:fixed; left:210px; top:182px; background-color:#fff;}
+.sort_box .prev_btns,.sort_box .next_btn{ width:100%; height:30px; border-bottom:1px solid #dcdcdc; box-sizing:border-box; display:block; overflow:hidden; cursor:pointer;}
+.sort_box ul{ width:100%; height:auto; max-height:300px; padding:0}
+.sort_box .prev_btns img,.sort_box .next_btn img{ display:block; margin:9px auto;}
+.sort_box ul li{ width:100%; height:30px; border-bottom:1px solid #dcdcdc;}
+.sort_box ul li a{ width:100%; height:100%; display:block; line-height:30px; text-align:center; font-size:14px; color:#666; text-decoration:none;}
+.sort_box ul li a:hover{ background:#dbede0; color:#5fb878;}
+.sort_box ul li a.hover{ background:#dbede0; color:#5fb878;}
+
+.tiji_box{ width:100%; height:auto; overflow:hidden;}
+.tiji_item{ width:100%; height:auto; overflow:hidden; border:1px solid #dcdcdc; box-sizing:border-box; background:#fff; margin-top:10px; cursor:pointer;}
+.tiji_item:hover{border:1px solid #2ca261;}
+.tj_hover{border:1px solid #2ca261 !important;}
+
+.tjitem_top{ width:100%; height:30px; background:#f1f1f1; padding:0px 10px; box-sizing:border-box; font-size:14px; line-height:30px; color:#666;}
+.tjitem_top b{ color:#f00;}
+.know_point{ float:right; height:30px; line-height:30px; color:#333; font-size:14px; letter-spacing:1px; max-width:530px;white-space:nowrap;text-overflow:ellipsis; overflow:hidden;}
+.tjitem_mid{ width:100%; height:auto; overflow:hidden; padding:10px 10px; box-sizing:border-box;}
+.tjitem_mid dt{ width:100%; height:auto; overflow:hidden; line-height:24px; color:#333; font-size:14px; margin-bottom:20px;}
+.tjitem_mid dd{ width:50%; height:auto; overflow:hidden; line-height:22px; padding-left:15px; font-size:14px; color:#666; margin-bottom:10px;}
+.tiji_answer{ width:100%; height:52px; padding:0px 10px; box-sizing:border-box; line-height:52px; font-size:14px; color:#2ca261; border-top:1px solid #dcdcdc;}
+.tiji_analyze{ width:100%; height:auto; overflow:hidden; padding:10px 10px; box-sizing:border-box; border-top:1px dashed #dcdcdc;}
+.tiji_analyze ._h2{font-size:14px; color:#2ca261; font-weight:normal;}
+.tiji_analyze .jiexi_info{ width:100%; height:auto; overflow:hidden; color:#666; font-size:14px; line-height:22px; margin-top:12px; margin-bottom:6px;}
+</style>
+<div class="ui-mask">
+ <img src="__IMAGES__/explain.jpg" width="100%">
+</div>
+<div class="layui-body" style=" padding-right:10px;">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class=""><a href="{:url('orgadmin/examination/index')}">题集列表</a></li>
+            <li class=""><a href="{:url('orgadmin/examination/statistics','id='.$id)}">答题统计</a></li>
+            <li class="layui-this">作业讲解</li>
+        </ul>
+        <h2 style="height:50px; border-bottom:dashed 1px #dcdcdc; line-height:50px; font-size:14px; font-weight:normal; color:#666;">
+         【{if condition="$info.status eq 1"}待上架{/if}{if condition="$info.status eq 2"}已上架{/if}{if condition="$info.status eq 3"}已下架{/if}{if condition="$info.status eq 4"}已删除{/if}】
+         {$info.name}
+         <span style="margin-left:28px">答题人数：<font color="#fac416">{$dtcount?:0}</font></span><span style="margin-left:28px">平均成绩：<font color="#fac416">{$avg?:0}/{$info.exam_num}</font></span>
+        </h2> 
+    </div>
+    
+<div class="explain_box">
+    {if condition="$qwrong neq ''"}
+ 	<div class="sort_box" id="sidebar">
+    	<span class="prev_btns"><img src="__IMAGES__/ry_top.png" /></span>
+    	<ul>
+           {volist name="qwrong" id="qi" key="eq"}
+        	<li><a href="#item_{$qi.QuestionId}">{$eq}</a></li>
+           {/volist}
+        </ul>
+        <span class="next_btn" style="border-bottom:none;"><img src="__IMAGES__/ry_bottom.png"/></span>
+    </div>
+    {/if}
+    <div class="tiji_box">
+       {if condition="$qwrong neq ''"}
+       {volist name="qwrong" id="qr" key="q"}
+    	<div class="tiji_item" id="item_{$qr.QuestionId}">
+        	<div class="tjitem_top">
+            	有<b>{$qr.NumberOfWrong}</b>人做错
+                <div class="know_point">知识点:
+                {if condition="$qr.KnowledgePointNames neq ''"}
+                 {volist name="qr.KnowledgePointNames" id="qw" key="w"}<font>{$qw}|</font>{/volist} 
+                {else/}
+                 无
+                {/if}
+                </div>
+            </div>
+            <dl class="tjitem_mid">
+            	<dt class="sortpadd"><span class="sort_tag">{$q}.</span>{$qr.name|deletep}</dt>
+                {volist name="qr.Options" id="qo" key="o"}
+                <dd class="sortpadd"><span class="sort_tag">{$qo.QuestionOptionId}.</span> {$qo.QuestionOptionText}</dd>
+                {/volist}
+            </dl>
+            <div class="tiji_answer">答案 {$qr.Answer}</div>
+            <div class="tiji_analyze">
+            	<h2 class="_h2">解析</h2>
+                <div class="jiexi_info">
+                    <p>{$qr.Analysis}</p>
+                </div>
+            </div>
+        </div>
+       {/volist} 
+       {/if}    
+    </div>
+ </div>  
+    
+</div>
+
+
+{/block}
+{block name="js"}
+<script src="__JS__/superSlide.js"></script>
+<script>
+ if( level < 3 ) { //不能看
+    $(".ui-mask").show();
+	$(".layui-body").hide().remove('*');
+	layer.open({
+		type: 1,
+		title: '用户升级',
+		content: '<div class="ui-update">您当前的等级为 <b>'+levname+'</b><br/>升级到<b>钻石用户</b>才能使用该功能<br/>洽谈请联系软云商务 <b>400-182-6266</b></div>',
+		area: ['300px', '200px'],
+		cancel: function(){ 
+		  window.history.go(-1);
+        }
+	});
+ }
+ $(".know_point").each(function(index, element) {
+   var txt = $(this).find("font").last().text();
+   $(this).find("font").last().text(txt.replace('|','')); 
+ });
+ $('.sort_box li a').click(function(){
+	 $('.sort_box li a').removeClass('hover')
+	 $(this).addClass('hover');
+	 var _index = $(this).index('.sort_box li a');
+	 $('.tiji_item').removeClass('tj_hover');
+	 $('.tiji_item').eq(_index).addClass('tj_hover');
+ })
+ $(".explain_box").slide({mainCell:".sort_box ul",scroll:5,pnLoop:false,autoPage:true,effect:"top",autoPlay:false,vis:10,prevCell:".prev_btns",nextCell:".next_btn"});
+ 
+ $(".layui-body").scroll(function(e) {
+   var t = $(".layui-body").scrollTop();
+   if ( t > 100 ) {
+	 $("#sidebar").css({'top':60});
+   } else {
+     $("#sidebar").css({'top':182});
+   }
+ });
+ 
+</script>
+{/block}

@@ -1,0 +1,687 @@
+{extend name="base" /}
+{block name="body"}
+<style>
+	.organ-logo {width: 50px;}
+	.status-1 {color: #fb9a50;}
+	#exam-qrcode .layui-form-label {width: 70px;}
+	#exam-qrcode .layui-input-inline {margin-right: 0;width: 240px;}
+	#exam-qrcode .qrcode-img {text-align: center;margin-top: 40px;}
+	#exam-qrcode .qrcode-img img {width: 150px;}
+	#exam-qrcode .tips-text {font-size: 12px;color: #999;text-align: center;margin: 10px 0 30px;}
+	#exam-qrcode .copy-url {margin: 0;height: 36px;line-height: 36px;border: 1px solid #e6e6e6;border-left: 0;width: 80px;text-align: center;}
+	.exam-edit-title {height: 40px;line-height: 40px;padding-left: 5px;background-color: #f1f1f1;border-bottom: 1px solid #e6e6e6;margin-bottom: 10px;}
+	.exam-tips {font-size: 14px;color: #333;margin: 5px 0;}
+	.exam-tips span {color: #34b0e2;}
+	#edit-exam-form {padding: 15px;}
+	.exam-title {margin: 20px 0 10px;}
+	#ispart-box {margin: 10px 0 10px;}
+	.pub-text-box {display: none;}
+	.pub-text-box.show {display: block;}
+	.exam-title {display: none;}
+	.layui-upload-button {margin-left: 10px;background-color: #009688;color: #fff;}
+	.layui-upload-button:hover {color: #fff;}
+	.layui-upload-icon i {color: #fff;}
+	.may-add {color: #12b262;}
+	.cannot-add {color: #0000ff;cursor: pointer;}
+	#add-exam-form {padding: 15px;}
+	.level-text {color: #00a0e9;}
+	.tips-box {padding: 20px 30px 10px;text-align: center;}
+	.layui-tab {position: relative;height: calc(50% - 15px);}
+	.layui-tab-content {position: relative;height: calc(100% - 52px);padding-bottom: 0;}
+	.layui-show {position: relative;height: 100%;}
+	.lui-table {position: relative;height: calc(100% - 87px);overflow-y: auto;margin-bottom: 10px;}
+	hr {margin-bottom: 0;}
+ .ui-laytips{ text-align:center; margin:26px auto 0px auto; line-height:180%; font-size:14px; color:#333;}
+ .layui-layer-btn0{ background-color:#1aa194 !important;}
+ .ui-laytips-img{ text-align:center;  margin:20px auto 20px auto; display:block; clear:both; overflow:hidden; width:110px;}
+ .ui-laytips-img span.ui-imgss{ height:24px; width:24px !important; background:url('__IMAGES__/tip-error.png') no-repeat center center; overflow:hidden; margin:0; padding:0; display:block;float:left; margin-right:5px;}
+ .ui-laytips-img span.ui-textss{color:#333; font-size:18px; float:left;display:block;}
+	
+.layui-layer-btn .layui-layer-btn0 {
+    border-color: #009688;
+    background-color: #009688;
+    color: #fff;
+}
+</style>
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">题集列表</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form layui-form-pane" action="{:url('orgadmin/examination/index')}" method="get">
+					<div class="layui-inline">
+						<label class="layui-form-label">学段学科</label>
+                        <div class="layui-input-inline">
+							<select id="subject" name="subject" lay-verify="required">
+                                <option value="0">全部</option>
+								{foreach name="subject_list" item="vo"}
+                                <option value="{$key}" {if condition="$subject==$key"} selected="selected"{/if}>{$vo.stageName}{$vo.name}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+						<label class="layui-form-label">适用年级</label>
+                        <div class="layui-input-inline">
+							<select id="grade" name="grade" lay-verify="required">
+                                <option value="0">全部</option>
+								{foreach name="grade_list" item="vo"}
+                                <option value="{$key}" {if condition="$grade==$key"} selected="selected"{/if}>{$vo}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+					<div class="layui-inline">
+						<label class="layui-form-label">题集状态</label>
+                        <div class="layui-input-inline">
+							<select id="status" name="status" lay-verify="required">
+                                <option value="0">全部</option>
+								{foreach name="status_list" item="vo"}
+                                <option value="{$key}" {if condition="$status==$key"} selected="selected"{/if}>{$vo}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+					<input type="hidden" name="is_mobile" id="is_mobile" value="{$is_mobile}">
+					<input type="hidden" name="page1" id="page1" value="{$page1|default='1'}">
+					<input type="hidden" name="page2" id="page2" value="{$page2|default='1'}">
+					<input type="hidden" name="is_page1" id="is_page1" value="false">
+					<input type="hidden" name="is_page2" id="is_page2" value="true">
+                    <div class="layui-inline">
+                        <button class="layui-btn" id="search-btn">搜索</button>
+						<!--<button type="reset" class="layui-btn layui-btn-primary">重置</button>-->
+						<input id="upload-word" type="file" name="file[]" multiple class="layui-upload-file" lay-title="添加题集"> 
+                    </div>
+                </form>
+                <hr>
+				<div class="lui-table" style="height:auto;">
+					<table class="layui-table">
+						<thead>
+						<tr>
+							<th>学段学科</th>
+							<th>题集名称</th>
+							<th>适用年级</th>
+							<th>题目数量</th>
+							<th>测评模板</th>
+							<th>状态</th>
+							<th>创建时间</th>
+							<th>作答次数</th>
+							<th width="260">操作</th>
+						</tr>
+						</thead>
+						<tbody>
+						{foreach name="list" item="vo"}
+						<tr>
+							<td>{$vo.subject_name}</td>
+							<td>{$vo.name}</td>
+							<td>{$vo.grade_name}</td>
+							<td>{$vo.exam_num}</td>
+							<td>
+                              {$tpllist[$vo['template']]}
+                            </td>
+							<td>
+								{if condition="$vo.status == 2"}
+								<div class="status-1">{$vo.status_name}</div>
+								{else/}
+								{$vo.status_name}
+								{/if}
+							</td>
+							<td>
+								{$vo.create_time|date= 'Y-m-d H:i:s',###}
+							</td>
+							<td align="center">
+                            
+                              {if condition="$vo.counts eq 0"}
+                                <font color="#999999">{$vo.counts}</font>
+                              {else/}
+                                <a href="{:url('orgadmin/examination/statistics',['id'=>$vo['id']])}"><font color="#4782f6">{$vo.counts}</font></a>
+                              {/if}
+                             </a>
+                            </td>
+							<td>
+								{if condition="$vo.status == 1 || $vo.status == 3"}
+								<a data-href="{:url('orgadmin/examination/using',['id'=>$vo['id']])}" class="layui-btn layui-btn-mini using">上架</a>
+								{elseif condition="$vo.status == 2"/}
+								<a data-href="{:url('orgadmin/examination/nonuse',['id'=>$vo['id']])}" class="layui-btn layui-btn-warm layui-btn-mini nonuse">下架</a>
+								{/if}
+								
+								{if condition="$vo.status != 4"}
+                                
+								<a href="{:url('orgadmin/examination/editExam',['id'=>$vo['id']])}" class="layui-btn layui-btn-normal layui-btn-mini">设置</a>
+								<a data-href="{:url('orgadmin/examination/getExam',['id'=>$vo['id']])}" class="layui-btn layui-btn-normal layui-btn-mini preview">预览</a>
+                                
+                                {if condition="$vo.counts eq 0"}
+                                <a href="javascript:;" class="layui-btn layui-btn-disabled layui-btn-mini" style="cursor:default;">统计</a>
+                                {else/}
+                                <a href="{:url('orgadmin/examination/statistics',['id'=>$vo['id']])}" class="layui-btn layui-btn-normal layui-btn-mini">统计</a>
+                                {/if}
+                                
+								<a data-href="{:url('orgadmin/examination/delete',['id'=>$vo['id']])}" class="layui-btn layui-btn-danger layui-btn-mini ajax-delete2">删除</a>
+								{/if}
+							</td>
+						</tr>
+						{/foreach}
+						</tbody>
+					</table>
+				</div>
+                <!--分页-->
+                {$list->render1()}
+            </div>
+        </div>
+    </div>
+
+</div>
+{/block}
+{block name="js"}
+<script src="__JS__/ueditor/ueditor.config.js"></script>
+<script src="__JS__/ueditor/ueditor.all.js"></script>
+{/block}
+{block name="script"}
+<script>
+	var form = layui.form();
+	
+	$('#upload-word').on('click',function(){
+		var org_level = <?php echo $organ_level;?>;
+		var level = org_level*5;
+		var grade_list = <?php echo $grade_list_json;?>;
+		var substr = '';
+		var stage1 = [1,2,3,4,5,6,7,8,19];
+		var stage2 = [9,10,11,12,13,14,15,16,17,18];
+		var stage3 = [20,21,22,23];
+		
+		layui.upload({
+			url: "/index.php/api/upload/uploadWord",
+			type: 'file',
+			ext: 'docx|doc',
+			success: function(res){
+				//alert(JSON.stringify(res));
+				var html = '<form id="add-exam-form" class="layui-form"><table class="layui-table"><colgroup><col width="100"><col width="200"><col width="100"><col width="50">'
+						 + '<col width="200"></colgroup><thead><tr><th>学段学科</th><th>题集名称</th><th>适用年级</th><th>题目数量</th><th>添加效验</th></tr>'
+						 + '</thead><tbody>';
+						 
+				$.each(res.data,function(k,v){
+					if($.inArray(v.subjectid,stage3) > -1){
+						substr = '<option value="1">一年级</option><option value="2">二年级</option><option value="3">三年级</option><option value="4">四年级</option><option value="5">五年级</option><option value="6">六年级</option>';
+					}else if($.inArray(v.subjectid,stage1) > -1){
+						substr = '<option value="7">初一</option><option value="8">初二</option><option value="9">初三</option>';
+					}else if($.inArray(v.subjectid,stage2) > -1){
+						substr = '<option value="10">高一</option><option value="11">高二</option><option value="12">高三</option>';
+					}
+					
+					if(v.ApiResultType == 1){
+						if((org_level<3)&&(level<v.exam_num)){
+							if(org_level == 1){
+								html += '<tr><td>'+v.subject+'</td><td>'
+								 + '</td><td></td><td>'+v.exam_num+'</td><td>题目数量超过限制，需要升级到 <span class="cannot-add">白金用户</span></td></tr>';
+							}else if(org_level == 2){
+								html += '<tr><td>'+v.subject+'</td><td>'
+								 + '</td><td></td><td>'+v.exam_num+'</td><td>题目数量超过限制，需要升级到 <span class="cannot-add">钻石用户</span></td></tr>';
+							}
+						}else{
+							html += '<tr class="add_check"><td>'+v.subject+'<input type="hidden" name="subject" value="'+v.subjectid+'">'
+								 +  '<input type="hidden" name="exam_url" value="'+v.url+'"><input type="hidden" name="ryun_url" value="'
+								 +  v.ryun_url+'"></td><td><input type="text" name="name" placeholder="请输入题集名称" class="layui-input"'
+								 +  ' value="'+ v.fileName +'"></td><td><select name="grade" lay-verify="required"><option value="0">全部</option>'
+								 +  substr+'</select></td><td>'+v.exam_num+'<input type="hidden" name="exam_num" value="'+v.exam_num+'">'
+								 +  '<input type="hidden" name="question_ids" value="'+v.question_ids+'"></td><td><span class="may-add">'
+								 +  '可添加</span></td></tr>';
+						}
+					}else{
+						html +='<tr><td>'+(v['subject'] == '' ? '未知':v['subject'])+'</td><td></td><td></td><td>20</td><td>'+v.ResultMessage+'</td></tr>';
+					}
+				});
+				html +='</tbody></table></form>';
+				layer.open({
+					type: 1,
+					title: '添加题集',
+					content: html,
+					btn: ['确认添加','取消'],
+					area: ['1200px', '600px'],
+					success: function(layero, index){
+						form.render();
+						
+						$('.cannot-add').on('click',function(){
+							//layer.closeAll();
+							var level_name = $(this).text();
+							var tipsHtml = '<div class="tips-box"><p>您当前的用户等级为 <span class="level-text">{$organ_level_name}</span></p>'
+									 + '<p>升级到 <span class="level-text">'+ level_name +'</span> 可增加题集题目数量</p>'
+									 + '<p>请联系软云商务 <span class="level-text">400-182-6266</span></p></div>';
+									 
+							layer.open({
+								type: 1,
+								title: '用户升级',
+								content: tipsHtml,
+								btn: ['确定'],
+								success: function(layero, index){
+									
+								}
+							})
+						});
+					},
+					btn1: function(){
+						var updata = new Array();
+						var l = 0;
+						var ssss = true;
+						$('.add_check').each(function(){
+							var subject = $(this).find('input[name="subject"]').val();
+							var exam_url = $(this).find('input[name="exam_url"]').val();
+							var ryun_url = $(this).find('input[name="ryun_url"]').val();
+							var name = $.trim($(this).find('input[name="name"]').val());
+							if(name == ''||name == null){
+								layer.msg('请填写题集名称！');
+								ssss = false;
+								return false;
+							}
+							var grade = $(this).find('select[name="grade"]').val();
+							if(grade == 0){
+								layer.msg('请选择题集适用年级！');
+								ssss = false;
+								return false;
+							}
+							var exam_num = $(this).find('input[name="exam_num"]').val();
+							var question_ids = $(this).find('input[name="question_ids"]').val();
+							updata[l] = {};
+							updata[l]['subject'] = subject;
+							updata[l]['exam_url'] = exam_url;
+							updata[l]['ryun_url'] = ryun_url;
+							updata[l]['name'] = name;
+							updata[l]['grade'] = grade;
+							updata[l]['exam_num'] = exam_num;
+							updata[l]['question_ids'] = question_ids;
+							l++;
+						})
+						//alert(JSON.stringify(updata));
+						//updata = JSON.stringify(updata);
+						if(ssss){
+							$.ajax({
+								url: 'add',
+								type: "post",
+								data: {'data':updata},
+								success: function (info) {
+									if (info.code === 1) {
+										setTimeout(function () {
+											location.href = info.url;
+										}, 1000);
+									}
+									layer.msg(info.msg);
+								}
+							});
+						}
+					},
+				})
+			}
+		});
+	});
+	
+	$('.preview').on('click',function(){
+		var _href = $(this).attr('data-href');
+		
+		$.ajax({
+			url: _href,
+			type: "get",
+			success: function (info) {
+				if (info.code === 1) {
+					var qrcode = info.info.qrcode;
+					var url = info.info.exam_url;
+					
+					var html = '<div id="exam-qrcode" class="layui-form-item"><div class="layui-block"><div class="layui-block qrcode-img">'
+							 + '<img src="'+ qrcode +'"></div><div class="layui-block tips-text">使用微信扫描可预览题集</div></div>'
+							 + '<div class="layui-block"><label class="layui-form-label">题集链接:</label><div class="layui-input-inline">'
+							 + '<input  readonly="readonly" id="exam_url" type="text" name="exam_url" value="'+ url +'" class="layui-input layui-input-inline"/></div>'
+							 + '<div  id="cpoy_exam_url" data-clipboard-text="'+url+'" class="layui-inline copy-url">复制链接</div></div></div>';
+					
+					layer.open({
+						type: 1,
+						title: '题集预览',
+						content: html,
+						btn: ['关闭'],
+						area: ['450px', '410px'],
+						success: function(layero, index){
+							/*
+							$('#exam-qrcode .copy-url').zclip({  
+								path: '/public/static/js/zclip/ZeroClipboard.swf',
+								copy: function(){
+									return $('#exam_url').val();
+								},
+								afterCopy: function(){
+									layer.msg('复制成功',{time: 1500});
+								}  
+							});
+							*/
+							var btn = document.getElementById('cpoy_exam_url');
+							var clipboard = new Clipboard(btn);
+							//复制成功执行的回调，可选
+							clipboard.on('success', function(e) {
+								layer.msg('复制成功');
+							});
+
+							//复制失败执行的回调，可选
+							clipboard.on('error', function(e) {
+								layer.msg('复制失败');
+							});
+						}
+					})
+				}else{
+					layer.msg(info.msg);
+				}
+			}
+		});
+	})
+	
+	$('.edit').on('click',function(){
+		var _href = $(this).attr('data-href');
+		var h = $(window).height() - 100 + 'px';
+		var old_pub_text = '';
+		var isupload = false;
+		var tzurl = ''; 
+		
+		$.ajax({
+			url: _href,
+			type: "get",
+			success: function (info) {
+				if (info.code === 1) {
+					var templateList = info.templateList;
+					var qrcode = info.info.qrcode;
+					var url = info.info.exam_url;
+					var radioHtml = '';
+					var textId1 = 'pub_text1_'+info.info.id;
+					var textId2 = 'pub_text2_'+info.info.id;
+					var textId3 = 'pub_text3_'+info.info.id;
+					var textId4 = 'pub_text4_'+info.info.id;
+					var ue1 = null,ue2 = null,ue3 = null,ue4 = null;
+					var old_pub_text = '';
+					var def_tmp = '';
+					if(info.organInfo.level > 2){
+						def_tmp = info.info.pub_text ? info.info.pub_text : info.def_tmp;
+					}else{
+						def_tmp = info.def_tmp;
+					}
+					
+					$.each(templateList,function(i,v){
+						var title = i > 1 ? v + ' （限时免费）' : v;
+						var value = Number(i);
+						var checked = info.info.template == value ? 'checked' : '';
+						radioHtml += '<div class="layui-block"><input type="radio" name="template" '+ checked +' value="'+ value +'" title="'+ title +'"></div>';
+					});
+					
+					if(info.organInfo.level == 4){
+						var editTitle = '宣传信息(可分阶段)';
+						var textHtml = '<div id="ispart-box" class="layui-block"><input type="radio" name="is_part" lay-filter="ispart" value="0" '+ (info.info.is_part == 0 ? 'checked' : '') +' title="默认"/><input type="radio" name="is_part" lay-filter="ispart" value="1" '+ (info.info.is_part == 1 ? 'checked' : '') +' title="分阶段"/></div>';
+						var pub_text1 = '';
+						var is_show = '';
+						
+						if(info.info.is_part == 1){
+							pub_text1 = info.info.pub_text1;
+							is_show = 'show';
+						}else{
+							pub_text1 = def_tmp;
+						}
+						
+						//var pub_text1 = info.info.pub_text1 ? info.info.pub_text1 : def_tmp;
+						var pub_text2 = info.info.pub_text2 ? info.info.pub_text2 : '';
+						var pub_text3 = info.info.pub_text3 ? info.info.pub_text3 : '';
+						var pub_text4 = info.info.pub_text4 ? info.info.pub_text4 : '';
+						old_pub_text = info.info.pub_text1 ? info.info.pub_text1 : '';
+						
+						textHtml += '<div class="layui-block pub-text-box show"><div class="layui-block exam-title">正确率(0%-25%)</div><div class="layui-block"><textarea id="'+ textId1 +'" name="pub_text1" placeholder="闪评测，让你有内容" class="layui-textarea">'+ pub_text1 +'</textarea></div></div>'
+								 +  '<div class="layui-block pub-text-box '+ is_show +'"><div class="layui-block exam-title">正确率(25%-50%)</div><div class="layui-block"><textarea id="'+ textId2 +'" name="pub_text2" placeholder="闪评测，让你有内容" class="layui-textarea">'+ pub_text2 +'</textarea></div></div>'
+								 +  '<div class="layui-block pub-text-box '+ is_show +'"><div class="layui-block exam-title">正确率(50%-75%)</div><div class="layui-block"><textarea id="'+ textId3 +'" name="pub_text3" placeholder="闪评测，让你有内容" class="layui-textarea">'+ pub_text3 +'</textarea></div></div>'
+								 +  '<div class="layui-block pub-text-box '+ is_show +'"><div class="layui-block exam-title">正确率(75%-100%)</div><div class="layui-block"><textarea id="'+ textId4 +'" name="pub_text4" placeholder="闪评测，让你有内容" class="layui-textarea">'+ pub_text4 +'</textarea></div></div>';
+					}else{
+						var editTitle = '宣传信息';
+						var pub_text = def_tmp;
+						var textHtml = '<div class="layui-block"><textarea id="'+ textId1 +'" name="pub_text1" placeholder="闪评测，让你有内容" class="layui-textarea">'+ pub_text +'</textarea></div>';
+					}
+					
+					var level_name = info.levelList[info.organInfo.level];
+					var tips = info.organInfo.level < 3 ? '<div class="layui-block exam-tips"><p>您当前的用户等级为 <span>'+ level_name + '</span>，'
+							 + '升级到 <span>钻石用户</span> 可自定义题集宣传内容</p><p>升级请联系软云商务 <span>400-182-6266</span></p></div>' : '';
+					
+					var html = '<form id="edit-exam-form" data-id="'+ info.info.id +'" class="layui-form"><div class="layui-block">'
+							 + '<div class="layui-block exam-edit-title">基础信息</div><div class="layui-form-item">'
+							 + '<div class="layui-form-label" style="text-align: left;">题集名称</div><div class="layui-input-block">'
+							 + '<input type="text" name="exam-name" class="layui-input" value="'+ info.info.name +'" placeholder="请输入题集名称" required/>'
+							 + '</div></div><div class="layui-form-item"><div class="layui-form-label" style="width: 155px;">要求填写姓名及手机号码</div>'
+							 + '<div class="layui-input-block">'
+							 + '<input type="radio" name="is_verify" value="0" '+ (info.info.is_verify == 0 ? "checked" : "") +' title="不要求"/>'
+							 + '<input type="radio" name="is_verify" value="1" '+ (info.info.is_verify == 1 ? "checked" : "") +' title="填写后才能开始答题"/>'
+							 + '<input type="radio" name="is_verify" value="2" '+ (info.info.is_verify == 2 ? "checked" : "") +' title="填写后才能查看测评"/>'
+							 + '</div></div></div><div class="layui-block">'
+							 + '<div class="layui-block exam-edit-title">测试模版设置</div><div class="layui-form-item">'+ radioHtml +'</div>'
+							 + '</div><div class="layui-block"><div class="layui-block exam-edit-title">'+ editTitle +'</div><div class="layui-form-item">'
+							 + '<div id="part_exam" class="layui-block">'+ textHtml + '</div>' + tips +'</div></div><div class="layui-block">'
+							 + '<div class="layui-block exam-edit-title">预览题集</div><div class="layui-form-item"><div id="exam-qrcode" class="layui-form-item">'
+							 + '<div class="layui-block"><div class="layui-block qrcode-img"><img src="'+ qrcode +'"></div><div class="layui-block tips-text">'
+							 + '使用微信扫描可预览题集</div></div><div class="layui-block" style="text-align: center;"><div class="layui-inline">'
+							 + '<label class="layui-form-label">题集链接:</label><div class="layui-input-inline">'
+							 + '<input readonly="readonly" id="exam_url" type="text" name="exam_url" value="'+ url +'" class="layui-input layui-input-inline"/>'
+							 + '</div><div id="cpoy_exam_url" data-clipboard-text="'+url+'" class="layui-inline copy-url">复制链接</div></div></div></div></div></div></form>';
+					
+					layer.open({
+						type: 1,
+						title: '题集设置',
+						content: html,
+						btn: ['确认','关闭'],
+						area: ['700px', h],
+						success: function(layero, index){
+							form.render();
+							ue1 = new UE.ui.Editor();
+							ue1.render(textId1); //UE.getEditor(textId1);
+							ue1.ready(function() {
+								ue1.setHeight(250);
+								if(info.organInfo.level < 3){
+									ue1.setDisabled();
+								}
+							});
+							
+							if(info.organInfo.level == 4){
+								ue2 = new UE.ui.Editor();
+								ue2.render(textId2); //UE.getEditor(textId2);
+								ue2.ready(function() {
+									ue2.setHeight(250);
+								});
+								ue3 = new UE.ui.Editor();
+								ue3.render(textId3); //UE.getEditor(textId3);
+								ue3.ready(function() {
+									ue3.setHeight(250);
+								});
+								ue4 = new UE.ui.Editor();
+								ue4.render(textId4); //UE.getEditor(textId4);
+								ue4.ready(function() {
+									ue4.setHeight(250);
+								});
+								
+								if(info.info.is_part == 1){
+									$('.exam-title').show();
+								}
+								
+								form.on('radio(ispart)', function(data){
+									if(data.value == 0){
+										$('body .pub-text-box').eq(1).removeClass('show');
+										$('body .pub-text-box').eq(2).removeClass('show');
+										$('body .pub-text-box').eq(3).removeClass('show');
+										$('.exam-title').hide();
+										ue1.ready(function() {
+											old_pub_text = ue1.getContent();
+											def_tmp = escape2Html(def_tmp);
+											ue1.setContent(def_tmp);
+										});
+									}else if(data.value == 1){
+										ue1.ready(function() {
+											old_pub_text = escape2Html(old_pub_text);
+											ue1.setContent(old_pub_text);
+										});
+										$('body .pub-text-box').eq(1).addClass('show');
+										$('body .pub-text-box').eq(2).addClass('show');
+										$('body .pub-text-box').eq(3).addClass('show');
+										$('.exam-title').show();
+									}
+								});
+							}
+							
+							var btn = document.getElementById('cpoy_exam_url');
+							var clipboard = new Clipboard(btn);
+							//复制成功执行的回调，可选
+							clipboard.on('success', function(e) {
+								layer.msg('复制成功');
+							});
+							//复制失败执行的回调，可选
+							clipboard.on('error', function(e) {
+								layer.msg('复制失败');
+							});
+						},
+						btn1: function(){
+							var param = {};
+							param.id = $('#edit-exam-form').attr('data-id');
+							param.template = $("input[name='template']:checked").val();
+							param.name = $("input[name='exam-name']").val();
+							param.is_part = $("input[name='is_part']:checked").val() ? $("input[name='is_part']:checked").val() : 0;
+							param.is_verify = $("input[name='is_verify']:checked").val() ? $("input[name='is_verify']:checked").val() : 0;
+							param.pub_text1 = ue1.getContent();
+							
+							if($.trim(param.name) == ''){
+								layer.msg('请填写题集名称！');
+								return;
+							}
+							
+							if(param.is_part){
+								param.pub_text2 = ue2.getContent();
+								param.pub_text3 = ue3.getContent();
+								param.pub_text4 = ue4.getContent();
+							}else{
+								param.pub_text2 = '';
+								param.pub_text3 = '';
+								param.pub_text4 = '';
+							}
+							
+							$.ajax({
+								url: "{:url('orgadmin/examination/edit')}",
+								type: "post",
+								dataType: "json",
+								cache: false,
+								data: param,
+								success: function (info) {
+									if (info.code === 1) {
+										layer.msg('提交成功！');
+										isupload = true;
+										tzurl = info.url;
+									}else{
+										layer.msg(info.msg);
+									}
+								}
+							});
+						},
+						end : function(){
+							/*
+							ue1.destroy();
+							if(info.organInfo.level == 4){
+								ue2.destroy();
+								ue3.destroy();
+								ue4.destroy();
+							}
+							*/
+							if(isupload){
+								location.href = tzurl;
+							}
+						}
+					})
+				}else{
+					layer.msg(info.msg);
+				}
+			}
+		});
+	})
+	
+	function escape2Html(str) {
+		var arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"'};
+		return str.replace(/&(lt|gt|nbsp|amp|quot);/ig,function(all,t){return arrEntities[t];});
+	}
+	
+	function operateAjax(_href){
+		$.ajax({
+			url: _href + "?time="+Math.random(),
+			type: "get",
+			success: function (info) {
+				if (info.code === 1) {
+					setTimeout(function () {
+						location.href = info.url;
+					}, 1000);
+				}
+				layer.msg(info.msg);
+			}
+		});
+	}
+	
+	
+	$('.ajax-delete2').on('click', function () {
+		var _href = $(this).attr('data-href');
+		layer.open({
+			shade: false,
+			title: '提示',
+			content: '删除后题集无法恢复',
+			btn: ['确定', '取消'],
+			yes: function (index) {
+				operateAjax(_href);
+				layer.close(index);
+			}
+		});
+
+		return false;
+	});
+	
+	$('.using').on('click', function () {
+		var _href = $(this).attr('data-href');
+		operateAjax(_href);
+	});
+	
+	$('.nonuse').on('click', function () {
+		var _href = $(this).attr('data-href');
+		operateAjax(_href);
+	});
+	$(function(){
+		var str = $('#is_mobile').val();
+		if(str == "true"){
+			$('#is_mobile2').prop('checked',true);
+		}else{
+			$('#is_mobile2').prop('checked',false);
+		}
+		
+	});
+	$('#is_mobile2').on('click',function(){
+		var str = $(this).prop('checked');
+		$('#is_mobile').val(str);
+		$('#is_page1').val("true");
+		$('#is_page2').val("false");
+		document.getElementById("search-btn").click();
+	});
+	$('.pagination-list1').on('click','a',function(){
+		var page1 = $(this).attr('data-url');
+		$('#page1').val(page1);
+		$('#is_page1').val("true");
+		$('#is_page2').val("true");
+		document.getElementById("search-btn").click();
+		
+	});
+	$('.pagination-list2').on('click','a',function(){
+		var page2 = $(this).attr('data-url');
+		$('#page2').val(page2);
+		$('#is_page2').val("true");
+		$('#is_page1').val("true");
+		document.getElementById("search-btn").click();
+	});
+	
+  $(".ui-update-even").click(function(e) {
+	   	layer.open({
+			type: 1,
+			title: '用户升级',
+			btn: ['关闭'],
+			content: '<div class="ui-laytips">您当前的用户等级为：<font color="#5fb878">'+levname+'</font><br/>升级到<font color="#5fb878">白金</font>才能使用该功能<br/>洽谈请联系软云商务<font color="#5fb878">400-180-6266</font></div>',
+			area: ['320px', '210px'],
+			success: function(layero, index){}
+		}); 
+  });
+</script>
+{/block}

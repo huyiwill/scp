@@ -1,0 +1,153 @@
+{extend name="base" /}
+{block name="body"}
+<style>
+	.organ-logo {width: 50px;}
+	.status-1 {color: #fb9a50;}
+	#exam-qrcode .layui-form-label {width: 70px;}
+	#exam-qrcode .layui-input-inline {margin-right: 0;width: 240px;}
+	#exam-qrcode .qrcode-img {text-align: center;margin-top: 40px;}
+	#exam-qrcode .qrcode-img img {width: 150px;}
+	#exam-qrcode .tips-text {font-size: 12px;color: #999;text-align: center;margin: 10px 0 30px;}
+	#exam-qrcode .copy-url {margin: 0;height: 36px;line-height: 36px;border: 1px solid #e6e6e6;border-left: 0;width: 80px;text-align: center;}
+	.exam-edit-title {height: 40px;line-height: 40px;padding-left: 5px;background-color: #f1f1f1;border-bottom: 1px solid #e6e6e6;margin-bottom: 10px;}
+	.exam-tips {font-size: 14px;color: #333;margin: 5px 0;}
+	.exam-tips span {color: #34b0e2;}
+	#edit-exam-form {padding: 15px;}
+	.exam-title {margin: 20px 0 10px;}
+	#ispart-box {margin: 10px 0 10px;}
+	.pub-text-box {display: none;}
+	.pub-text-box.show {display: block;}
+	.exam-title {display: none;}
+	.layui-upload-button {margin-left: 10px;background-color: #009688;color: #fff;}
+	.layui-upload-button:hover {color: #fff;}
+	.layui-upload-icon i {color: #fff;}
+	.may-add {color: #12b262;}
+	.cannot-add {color: #0000ff;cursor: pointer;}
+	#add-exam-form {padding: 15px;}
+	.level-text {color: #00a0e9;}
+	.tips-box {padding: 20px 30px 10px;text-align: center;}
+	.layui-tab {position: relative;height: calc(50% - 15px);}
+	.layui-tab-content {position: relative;height: calc(100% - 52px);padding-bottom: 0;}
+	.layui-show {position: relative;height: 100%;}
+	.lui-table {position: relative;height: calc(100% - 87px);overflow-y: auto;margin-bottom: 10px;}
+	hr {margin-bottom: 0;}
+	.col-md-6{ width:50%; float:left; box-sizing:border-box; padding:0px; overflow:hidden; height:212px;}
+	.col-main{ width:100%; height:205px; border:solid 1px #ddd; box-sizing:border-box;}
+	.col-main h2{ height:46px; border-bottom:solid 1px #dcdcdc; font-size:16px; color:#333; line-height:46px;}
+	.col-main h2 font a{ margin-right:15px; color:#999; font-size:14px;}
+	.col-main h2 span.col-li{ width:5px; height:16px; margin:15px 5px 15px 15px; display:block;float:left; background-color:#5fb878;}
+	.col-main li{ height:50px; border-bottom:dashed 1px #dcdcdc; line-height:50px; overflow:hidden; color:#666; font-size:14px; clear:both;}
+	.col-li-txt{ margin-left:15px; width:80%; overflow:hidden; height:50px;float:left; clear:both;}
+	.col-li-tj{ float:right; margin-right:15px;}
+	.col-main li:nth-child(3n){ border:none;}
+	.col-progress{ width:200px; height:6px; background-color:#dcdcdc; border-radius:10px; float:right; margin-top:23px; overflow:hidden;}
+	.col-progress span{ background-color:#5fb878;border-radius:10px; display:inline-block; height:6px;}
+	.ell{ text-overflow:ellipsis; white-space:nowrap;}
+</style>
+<div class="ui-mask">
+ <img src="__IMAGES__/tj.png" width="100%">
+</div>
+<div class="layui-body" style=" padding-right:10px;">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class=""><a href="{:url('orgadmin/examination/index')}">题集列表</a></li>
+            <li class="layui-this">答题统计</li>
+        </ul>
+        <h2 style="height:50px; border-bottom:dashed 1px #dcdcdc; line-height:50px; font-size:14px; font-weight:normal; color:#666;">
+         【{if condition="$info.status eq 1"}待上架{/if}{if condition="$info.status eq 2"}已上架{/if}{if condition="$info.status eq 3"}已下架{/if}{if condition="$info.status eq 4"}已删除{/if}】
+         {$info.name}
+         <span style="margin-left:28px">答题人数：<font color="#fac416">{$dtcount?:0}</font></span><span style="margin-left:28px">平均成绩：<font color="#fac416">{$avg?:0}/{$info.exam_num}</font></span>
+        </h2>
+        
+        <div class="layui-tab-content" style="padding:0; margin-top:10px; height:auto; overflow:hidden;">
+        
+        
+        <div class="row">
+          <div class="col-md-6" style="padding-right:5px;">
+           <div class="col-main">
+            <h2><span class="col-li"></span>待提升知识点<span class="pull-right"><font><a href="{:url('examination/tree','id='.$id)}">更多</a></font></span></h2>
+            <ul>
+            {if condition="$know neq ''"}
+            {volist name="know" id="ko" key="k"}
+            {if condition="$k lt 4"}
+             <li>
+              <span class="col-li-txt ell" style="width:230px">{$ko.topic}</span>
+              <span class="col-li-tj" style="width:130px; text-align:right !important;">平均掌握 {:round($ko.score, 2)}%</span>
+              <span class="col-progress"><span class="col-progress-bar" style="width:{:intval($ko.score)*2}px">&nbsp;</span></span>
+             </li>
+             {/if}
+             {/volist}
+             {/if}
+            </ul>
+            
+           </div>
+          </div>
+          <div class="col-md-6" style="float:right;padding-left:5px;">
+           <div class="col-main">
+             <h2><span class="col-li"></span>易错题统计<span class="pull-right"><font><a href="{:url('examination/explain','id='.$id)}">更多</a></font></span></h2>
+             <ul>
+              {if condition="$qwrong neq ''"}
+              {volist name="qwrong" id="qr" key="q"}
+              {if condition="$q lt 4"}
+               <li><span class="col-li-txt ell">{$qr.name}</span> <span class="col-li-tj"><font color="#fac416">{$qr.NumberOfWrong}</font> 人做错</span></li>
+              {/if}
+              {/volist}
+              {/if}
+             </ul>
+           </div>
+          </div>
+        </div>
+           
+        </div>
+        
+        <ul class="layui-tab-title">
+            <li class="layui-this">学生成绩</li>
+        </ul>
+        <div class="lui-table" style="height:auto;">
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>联系方式</th>
+                    <th>成绩</th>
+                    <th>提交时间</th>
+                    <th>答题详情</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="stulist" id="so"}
+                <tr>
+                    <td>{$so.answer_name?:'--'}</td>
+                    <td>{$so.answer_mobile?:'--'}</td>
+                    <td><font color="#4782f6">{:floatval($so.score)}/{$info.exam_num}</font></td>
+                    <td>{:date('Y-m-d H:i:s',$so['create_time'])}</td>
+                    <td><a href="{:url('examination/studentresult','id='.$so['id'])}" class="layui-btn layui-btn-normal layui-btn-mini">详情</a></td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+            {$pshow}
+        </div>
+        
+    </div>
+
+</div>
+{/block}
+{block name="js"}
+ <script type="text/javascript">
+ if( level == 1 ) { //不能看
+    $(".ui-mask").show();
+	$(".layui-body").hide().remove('*');
+	layer.open({
+		type: 1,
+		title: '用户升级',
+		content: '<div class="ui-update">您当前的等级为 <b>'+levname+'</b><br/>升级到<b>白金用户</b>才能使用该功能<br/>洽谈请联系软云商务 <b>400-182-6266</b></div>',
+		area: ['300px', '200px'],
+		cancel: function(){ 
+		  window.history.go(-1);
+        }
+	});
+ }
+ </script>
+{/block}

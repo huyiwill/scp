@@ -1,0 +1,475 @@
+<?php
+// +----------------------------------------------------------------------
+// | ThinkPHP [ WE CAN DO IT JUST THINK ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2006~2017 http://thinkphp.cn All rights reserved.
+// +----------------------------------------------------------------------
+// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// +----------------------------------------------------------------------
+// | Author: zhangyajun <448901948@qq.com>
+// +----------------------------------------------------------------------
+
+namespace think\paginator\driver;
+
+use think\Paginator;
+
+class Bootstrap extends Paginator
+{
+
+    /**
+     * 上一页按钮
+     * @param string $text
+     * @return string
+     */
+    protected function getPreviousButton($text = "&laquo;")
+    {
+
+        if ($this->currentPage() <= 1) {
+            return $this->getDisabledTextWrapper($text);
+        }
+
+        $url = $this->url(
+            $this->currentPage() - 1
+        );
+
+        return $this->getPageLinkWrapper($url, $text);
+    }
+	
+	protected function getPreviousButton1($text = "&laquo;")
+    {
+
+        if ($this->currentPage() <= 1) {
+            return $this->getDisabledTextWrapper1($text);
+        }
+
+        $url = $this->url(
+            $this->currentPage() - 1
+        );
+		$num = $this->currentPage() - 1;
+        return $this->getPageLinkWrapper1($url, $text, $num);
+    }
+	
+	protected function getPreviousButton2($text = "&laquo;")
+    {
+
+        if ($this->currentPage() <= 1) {
+            return $this->getDisabledTextWrapper2($text);
+        }
+
+        $url = $this->url(
+            $this->currentPage() - 1
+        );
+		$num = $this->currentPage() - 1;
+        return $this->getPageLinkWrapper2($url, $text, $num);
+    }
+
+    /**
+     * 下一页按钮
+     * @param string $text
+     * @return string
+     */
+    protected function getNextButton($text = '&raquo;')
+    {
+        if (!$this->hasMore) {
+            return $this->getDisabledTextWrapper($text);
+        }
+
+        $url = $this->url($this->currentPage() + 1);
+
+        return $this->getPageLinkWrapper($url, $text);
+    }
+	
+	
+	protected function getNextButton1($text = '&raquo;')
+    {
+        if (!$this->hasMore) {
+            return $this->getDisabledTextWrapper1($text);
+        }
+
+        $url = $this->url($this->currentPage() + 1);
+		$num = $this->currentPage() + 1;
+        return $this->getPageLinkWrapper1($url, $text, $num);
+    }
+	
+	protected function getNextButton2($text = '&raquo;')
+    {
+        if (!$this->hasMore) {
+            return $this->getDisabledTextWrapper2($text);
+        }
+
+        $url = $this->url($this->currentPage() + 1);
+		$num = $this->currentPage() + 1;
+        return $this->getPageLinkWrapper2($url, $text, $num);
+    }
+
+    /**
+     * 页码按钮
+     * @return string
+     */
+    protected function getLinks()
+    {
+        if ($this->simple)
+            return '';
+
+        $block = [
+            'first'  => null,
+            'slider' => null,
+            'last'   => null
+        ];
+
+        $side   = 3;
+        $window = $side * 2;
+
+        if ($this->lastPage < $window + 6) {
+            $block['first'] = $this->getUrlRange(1, $this->lastPage);
+        } elseif ($this->currentPage <= $window) {
+            $block['first'] = $this->getUrlRange(1, $window + 2);
+            $block['last']  = $this->getUrlRange($this->lastPage - 1, $this->lastPage);
+        } elseif ($this->currentPage > ($this->lastPage - $window)) {
+            $block['first'] = $this->getUrlRange(1, 2);
+            $block['last']  = $this->getUrlRange($this->lastPage - ($window + 2), $this->lastPage);
+        } else {
+            $block['first']  = $this->getUrlRange(1, 2);
+            $block['slider'] = $this->getUrlRange($this->currentPage - $side, $this->currentPage + $side);
+            $block['last']   = $this->getUrlRange($this->lastPage - 1, $this->lastPage);
+        }
+
+        $html = '';
+
+        if (is_array($block['first'])) {
+            $html .= $this->getUrlLinks($block['first']);
+        }
+
+        if (is_array($block['slider'])) {
+            $html .= $this->getDots();
+            $html .= $this->getUrlLinks($block['slider']);
+        }
+
+        if (is_array($block['last'])) {
+            $html .= $this->getDots();
+            $html .= $this->getUrlLinks($block['last']);
+        }
+
+        return $html;
+    }
+	
+	protected function getLinks1()
+    {
+        if ($this->simple)
+            return '';
+
+        $block = [
+            'first'  => null,
+            'slider' => null,
+            'last'   => null
+        ];
+
+        $side   = 3;
+        $window = $side * 2;
+
+        if ($this->lastPage < $window + 6) {
+            $block['first'] = $this->getUrlRange(1, $this->lastPage);
+        } elseif ($this->currentPage <= $window) {
+            $block['first'] = $this->getUrlRange(1, $window + 2);
+            $block['last']  = $this->getUrlRange($this->lastPage - 1, $this->lastPage);
+        } elseif ($this->currentPage > ($this->lastPage - $window)) {
+            $block['first'] = $this->getUrlRange(1, 2);
+            $block['last']  = $this->getUrlRange($this->lastPage - ($window + 2), $this->lastPage);
+        } else {
+            $block['first']  = $this->getUrlRange(1, 2);
+            $block['slider'] = $this->getUrlRange($this->currentPage - $side, $this->currentPage + $side);
+            $block['last']   = $this->getUrlRange($this->lastPage - 1, $this->lastPage);
+        }
+
+        $html = '';
+
+        if (is_array($block['first'])) {
+            $html .= $this->getUrlLinks1($block['first']);
+        }
+
+        if (is_array($block['slider'])) {
+            $html .= $this->getDots1();
+            $html .= $this->getUrlLinks1($block['slider']);
+        }
+
+        if (is_array($block['last'])) {
+            $html .= $this->getDots1();
+            $html .= $this->getUrlLinks1($block['last']);
+        }
+
+        return $html;
+    }
+	
+	protected function getLinks2()
+    {
+        if ($this->simple)
+            return '';
+
+        $block = [
+            'first'  => null,
+            'slider' => null,
+            'last'   => null
+        ];
+
+        $side   = 3;
+        $window = $side * 2;
+
+        if ($this->lastPage < $window + 6) {
+            $block['first'] = $this->getUrlRange(1, $this->lastPage);
+        } elseif ($this->currentPage <= $window) {
+            $block['first'] = $this->getUrlRange(1, $window + 2);
+            $block['last']  = $this->getUrlRange($this->lastPage - 1, $this->lastPage);
+        } elseif ($this->currentPage > ($this->lastPage - $window)) {
+            $block['first'] = $this->getUrlRange(1, 2);
+            $block['last']  = $this->getUrlRange($this->lastPage - ($window + 2), $this->lastPage);
+        } else {
+            $block['first']  = $this->getUrlRange(1, 2);
+            $block['slider'] = $this->getUrlRange($this->currentPage - $side, $this->currentPage + $side);
+            $block['last']   = $this->getUrlRange($this->lastPage - 1, $this->lastPage);
+        }
+
+        $html = '';
+
+        if (is_array($block['first'])) {
+            $html .= $this->getUrlLinks2($block['first']);
+        }
+
+        if (is_array($block['slider'])) {
+            $html .= $this->getDots2();
+            $html .= $this->getUrlLinks2($block['slider']);
+        }
+
+        if (is_array($block['last'])) {
+            $html .= $this->getDots2();
+            $html .= $this->getUrlLinks2($block['last']);
+        }
+
+        return $html;
+    }
+
+    /**
+     * 渲染分页html
+     * @return mixed
+     */
+    public function render()
+    {
+        if ($this->hasPages()) {
+            if ($this->simple) {
+                return sprintf(
+                    '<ul class="pager">%s %s</ul>',
+                    $this->getPreviousButton(),
+                    $this->getNextButton()
+                );
+            } else {
+                return sprintf(
+                    '<ul class="pagination">%s %s %s</ul>',
+                    $this->getPreviousButton(),
+                    $this->getLinks(),
+                    $this->getNextButton()
+                );
+            }
+        }
+    }
+	
+	/*异步分页*/
+	public function render1()
+    {
+        if ($this->hasPages()) {
+            if ($this->simple) {
+                return sprintf(
+                    '<ul class="pager">%s %s</ul>',
+                    $this->getPreviousButton1(),
+                    $this->getNextButton1()
+                );
+            } else {
+                return sprintf(
+                    '<ul class="pagination pagination-list1">%s %s %s</ul>',
+                    $this->getPreviousButton1(),
+                    $this->getLinks1(),
+                    $this->getNextButton1()
+                );
+            }
+        }
+    }
+	
+	public function render2()
+    {
+        if ($this->hasPages()) {
+            if ($this->simple) {
+                return sprintf(
+                    '<ul class="pager">%s %s</ul>',
+                    $this->getPreviousButton2(),
+                    $this->getNextButton2()
+                );
+            } else {
+                return sprintf(
+                    '<ul class="pagination pagination-list2">%s %s %s</ul>',
+                    $this->getPreviousButton2(),
+                    $this->getLinks2(),
+                    $this->getNextButton2()
+                );
+            }
+        }
+    }
+
+    /**
+     * 生成一个可点击的按钮
+     *
+     * @param  string $url
+     * @param  int    $page
+     * @return string
+     */
+    protected function getAvailablePageWrapper($url, $page)
+    {
+        return '<li><a href="' . htmlentities($url) . '">' . $page . '</a></li>';
+    }
+	
+	 protected function getAvailablePageWrapper1($url, $page, $num=0)
+    {
+		if($num != 0){
+			return '<li><a href="javascript:;" data-url="' . $num . '">' . $page . '</a></li>';
+		}
+		//$url = str_replace("page","page1",$url);
+        return '<li><a href="javascript:;" data-url="' . $page . '">' . $page . '</a></li>';
+    }
+	
+	 protected function getAvailablePageWrapper2($url, $page, $num=0)
+    {
+		if($num != 0){
+			return '<li><a href="javascript:;" data-url="' . $num . '">' . $page . '</a></li>';
+		}
+		//$url = str_replace("page","page2",$url);
+        return '<li><a href="javascript:;" data-url="' . $page . '">' . $page . '</a></li>';
+    }
+
+    /**
+     * 生成一个禁用的按钮
+     *
+     * @param  string $text
+     * @return string
+     */
+    protected function getDisabledTextWrapper($text)
+    {
+        return '<li class="disabled"><span>' . $text . '</span></li>';
+    }
+	
+	protected function getDisabledTextWrapper1($text)
+    {
+        return '<li class="disabled"><span>' . $text . '</span></li>';
+    }
+	
+	protected function getDisabledTextWrapper2($text)
+    {
+        return '<li class="disabled"><span>' . $text . '</span></li>';
+    }
+
+    /**
+     * 生成一个激活的按钮
+     *
+     * @param  string $text
+     * @return string
+     */
+    protected function getActivePageWrapper($text)
+    {
+        return '<li class="active"><span>' . $text . '</span></li>';
+    }
+
+	 protected function getActivePageWrapper1($text)
+    {
+        return '<li class="active"><span>' . $text . '</span></li>';
+    }
+	
+	 protected function getActivePageWrapper2($text)
+    {
+        return '<li class="active"><span>' . $text . '</span></li>';
+    }
+    /**
+     * 生成省略号按钮
+     *
+     * @return string
+     */
+    protected function getDots()
+    {
+        return $this->getDisabledTextWrapper('...');
+    }
+	
+	protected function getDots1()
+    {
+        return $this->getDisabledTextWrapper1('...');
+    }
+	
+	protected function getDots2()
+    {
+        return $this->getDisabledTextWrapper2('...');
+    }
+    /**
+     * 批量生成页码按钮.
+     *
+     * @param  array $urls
+     * @return string
+     */
+    protected function getUrlLinks(array $urls)
+    {
+        $html = '';
+
+        foreach ($urls as $page => $url) {
+            $html .= $this->getPageLinkWrapper($url, $page);
+        }
+
+        return $html;
+    }
+	
+	protected function getUrlLinks1(array $urls)
+    {
+        $html = '';
+        foreach ($urls as $page => $url) {
+            $html .= $this->getPageLinkWrapper1($url, $page);
+        }
+
+        return $html;
+    }
+	
+	protected function getUrlLinks2(array $urls)
+    {
+        $html = '';
+
+        foreach ($urls as $page => $url) {
+            $html .= $this->getPageLinkWrapper2($url, $page);
+        }
+
+        return $html;
+    }
+
+    /**
+     * 生成普通页码按钮
+     *
+     * @param  string $url
+     * @param  int    $page
+     * @return string
+     */
+    protected function getPageLinkWrapper($url, $page)
+    {
+        if ($page == $this->currentPage()) {
+            return $this->getActivePageWrapper($page);
+        }
+
+        return $this->getAvailablePageWrapper($url, $page);
+    }
+	
+	protected function getPageLinkWrapper1($url, $page, $num=0)
+    {
+        if ($page == $this->currentPage()) {
+            return $this->getActivePageWrapper1($page);
+        }
+        return $this->getAvailablePageWrapper1($url, $page, $num);
+    }
+	
+	protected function getPageLinkWrapper2($url, $page, $num=0)
+    {
+        if ($page == $this->currentPage()) {
+            return $this->getActivePageWrapper2($page);
+        }
+
+        return $this->getAvailablePageWrapper2($url, $page, $num);
+    }
+}

@@ -1,0 +1,293 @@
+{extend name="base" /}
+{block name="css"}
+<style>
+	footer {display: none;}
+	.lui-nav {background-color: #f3f3f3;position: fixed;width: 100%;top: 60px;z-index: 10;height: 52px;}
+	.lui-nav-left {color: #ff7340;font-size: 16px;font-weight: 600;float: left;position: relative;top: 15px;left: 10px;}
+	.lui-nav-right {float: right;position: relative;right: 15px;top: 10px;}
+	.lui-nav-rate {display: inline-block;vertical-align: middle;font-size: 18px;color: #25272c;}
+	.lui-nav-rate .rate-text {font-size: 22px;color: #4782f6;}
+	.lui-nav-dtk {display: inline-block;margin-left: 10px;}
+	.lui-nav-dtk img {width: 22px;vertical-align: middle;transition: all .15s;}
+	.lui-nav-dtk img:active {box-shadow: 0 0 1px 1px #ccc;}
+	.lui-content {padding: 112px 0 103px;}
+	.lui-exam-main {display: none;}
+	.lui-exam-main.lui-active {display: block;}
+	.lui-question-item {font-size: 16px;color: #25272c;line-height: 1.6;padding: 10px 15px 15px;}
+	.lui-kulvar {height: 15px;background-color: #f3f3f3;}
+	.lui-option-item {font-size: 16px;color: #25272c;line-height: 1.6;padding: 10px 15px 15px;}
+	.lui-option-item div {margin: 0 0 8px;}
+	.footer {position: fixed;width: 100%;background-color: #fff;z-index: 1;bottom: 0;}
+	.lui-support-text {text-align: center;font-size: 14px;color: #aaa;height: 30px;line-height: 30px;}
+	.lui-select-main {border-top: 1px solid #edeff0;}
+	.lui-select-item {display: inline-block;width: 25%;margin: 0 -3px 0 -2px;text-align: center;padding: 10px 0;}
+	.lui-select-option {width: 50px;height: 50px;line-height: 50px;text-align: center;font-size: 27px;background-color: #fff;color: #4782f6;display: inline-block;border-radius: 50%;border: 1px solid #4782f6;transition: all .2s;}
+	.lui-select-option.lui-active {background-color: #4782f6;color: #fff;}
+	.lui-select-option:active {background-color: #4782f6;color: #fff;}
+	.lui-select-option.lui-active:active {background-color: #fff;color: #4782f6;}
+	#dtk .lui-moday-content {position: relative;background-color: #fff;top: 112px;height: calc(100% - 252px);overflow-y: hidden;display: none;}
+	.lui-moday-tuckup {position: absolute;width: 100%;bottom: 70px;text-align: center;display: none;}
+	.lui-moday-tuckup img {width: 40px;position: relative;transition: all .15s;}
+	.lui-moday-tuckup img:active {bottom: 1px;}
+	.lui-exam-list {padding: 10px 0;position: relative;height: calc(100% - 105px);overflow-y: hidden;}
+	.lui-exam-item {display: inline-block;width: 20%;margin: 0 -3px 0 -2px;text-align: center;padding: 10px 0;}
+	.lui-exam-option {width: 46px;height: 46px;line-height: 46px;text-align: center;font-size: 21px;background-color: #fff;color: #4782f6;display: inline-block;border-radius: 50%;border: 1px solid #4782f6;transition: all .2s;}
+	.lui-exam-option.lui-active {background-color: #4782f6;color: #fff;}
+	.lui-exam-option:active {background-color: #4782f6;color: #fff;}
+	.lui-exam-option.lui-active:active {background-color: #fff;color: #4782f6;}
+	.submit-btn {width: calc(100% - 40px);margin: 20px;height: 45px;line-height: 45px;text-align: center;color: #fff;font-size: 18px;background-image: -webkit-linear-gradient(to right, #47a2f6, #4782f6);background-image: linear-gradient(to right, #47a2f6, #4782f6);border-radius: 25px;transition: all .2s;}
+	.submit-btn:active {box-shadow: 0 0 1px 1px #ccc;}
+	.lui-question-item img {vertical-align: middle;max-width: 98% !important;height: auto !important;}
+	.lui-option-item img {vertical-align: middle;}
+	.lui-option-item p {display: inline-block;margin: 0;}
+	.lui-question-item p {display: inline-block;margin: 0;}
+	@media (max-width: 320px) {
+		.lui-nav {top: 50px;height: 48px;}
+		.lui-nav-left {font-size: 14px;}
+		.lui-nav-rate {font-size: 16px;}
+		.lui-nav-rate .rate-text {font-size: 20px;}
+		.lui-nav-dtk img {width: 18px;}
+		#dtk .lui-moday-content {top: 98px;height: calc(100% - 192px);}
+		.lui-exam-item {margin: 0;}
+		.lui-moday-tuckup img {width: 30px;}
+		.lui-moday-tuckup {bottom: 40px;}
+		.lui-content {padding-top: 98px;padding-bottom: 93px;}
+		.lui-select-option {width: 40px;height: 40px;line-height: 40px;}
+	}
+</style>
+{/block}
+{block name="body"}
+	<div class="lui-nav">
+		<div class="lui-nav-left">
+			{if condition="$data.exam_stauts eq 1"}
+			（<span>待上架</span>）
+			{elseif condition="$data.exam_stauts eq 3"/}
+			（<span>已下架</span>）
+			{elseif condition="$data.exam_stauts eq 4"/}
+			（<span>已删除</span>）
+			{/if}
+		</div>
+		<div class="lui-nav-right">
+			<div class="lui-nav-rate">
+				<span class="rate-text">1</span> / <span class="sum-text">{$data.exam_num}</span>
+			</div>
+			<div class="lui-nav-dtk">
+				<img src="/public/uploads/system/icon-dtk.png" />
+			</div>
+		</div>
+	</div>
+	<div id="dtk" class="lui-moday-body">
+		<div class="lui-moday-box"></div>
+		<div class="lui-moday-content">
+			<div class="lui-exam-list"></div>
+			<div class="submit-btn">提交</div>
+		</div>
+		<div class="lui-moday-tuckup">
+			<img src="/public/uploads/system/icon-up.png" />
+		</div>
+	</div>
+	
+	<div class="lui-content">
+		<div class="lui-exam-body">
+			{foreach name="data.list" item="vo"}
+				<div eid="{$key+1}" data-key="" class="lui-exam-main {if condition='$key == 0'}lui-active{/if}">
+					<div question_id = "{$vo.QuestionId}" class="lui-question-item">
+						{$key+1}. {$vo.QuestionContent|deletep}
+					</div>
+					<div class="lui-kulvar"></div>
+					<div class="lui-option-item">
+						{foreach name="vo.Options" item="voitem"}
+							<div>{$voitem.QuestionOptionId}：{$voitem.QuestionOptionText}</div>
+						{/foreach}
+					</div>
+				</div>
+			{/foreach}
+		</div>
+	</div>
+	<div class="footer">
+		<div class="lui-support-text">软云技术支持</div>
+		<div class="lui-select-main">
+			<div class="lui-select-item">
+				<div data="1" class="lui-select-option">A</div>
+			</div>
+			<div class="lui-select-item">
+				<div data="2" class="lui-select-option">B</div>
+			</div>
+			<div class="lui-select-item">
+				<div data="3" class="lui-select-option">C</div>
+			</div>
+			<div class="lui-select-item">
+				<div data="4" class="lui-select-option">D</div>
+			</div>
+		</div>
+	</div>
+	<input type="hidden" value="{$data.examinations_id}" id="examinations_id">
+{/block}
+{block name="js"}
+	
+{/block}
+{block name="script"}
+<script>
+	var winW = $(window).width();
+	var winH = $(window).height();
+	var keyList = {};
+	
+	$(function(){
+		var status = '{$data.status}';
+		
+		if(status == '2'){
+			var msg = '{$data.msg}';
+			$.showForbid(msg);
+		}
+	
+		var exam_num = '{$data.exam_num}';
+		for(var i=0;i<Number(exam_num);i++){
+			keyList[i+1] = 0;
+		}
+		/*
+		$('.lui-exam-main').each(function(i,e){
+			keyList[i+1] = 0;
+		})
+		*/
+		$('.lui-nav-dtk').on('click',function(){
+			var isshow = $(this).hasClass('lui-active');
+			if(!isshow){
+				renderDtk('show');
+			}else{
+				renderDtk('hide');
+			}
+		})
+		
+		$('#dtk .lui-moday-tuckup').click('click',function(){
+			renderDtk('hide');
+		});
+		
+		$('.lui-select-option').on('click',function(){
+			var key = $(this).attr('data');
+			var eid = $('.lui-exam-main.lui-active').attr('eid');
+			keyList[eid] = key;
+			
+			$('.lui-select-option').removeClass('lui-active');
+			if(parseInt(eid) < $('.lui-exam-main').length){
+				$.showLading();
+				setTimeout(function(){
+					$('.rate-text').text(parseInt(eid) + 1);
+					$('.lui-exam-main').removeClass('lui-active');
+					$('.lui-exam-main').eq(parseInt(eid)).addClass('lui-active');
+					var key2 = keyList[parseInt(eid) + 1];
+					if(key2 != 0){
+						$('.lui-select-option').eq(parseInt(key2) - 1).addClass('lui-active');
+					}
+					$.hideLading();
+				},500);
+			}else{
+				$(this).addClass('lui-active');
+				renderDtk('show');
+			}
+		})
+		
+		$('.lui-exam-list').on('click','.lui-exam-option',function(){
+			var eid = $(this).attr('data');
+			var key = keyList[eid];
+			
+			$('.rate-text').text(eid);
+			$('.lui-exam-main').removeClass('lui-active');
+			$('.lui-exam-main').eq(parseInt(eid) - 1).addClass('lui-active');
+			$('.lui-select-option').removeClass('lui-active');
+			if(key != 0){
+				$('.lui-select-option').eq(parseInt(key) - 1).addClass('lui-active');
+			}
+			renderDtk('hide');
+		})
+		
+		$('#dtk .submit-btn').on('click',function(){
+			var isfull = true;
+			$.each(keyList,function(i,v){
+				if(v == 0){
+					isfull = false;
+				}
+			})
+			
+			if(isfull){
+				submitAnswer();
+			}else{
+				$.showConfirm(function(ret){
+					if(ret.index == 1){
+						submitAnswer();
+					}
+				})
+			}
+		})
+		
+		var org_level = '{$org_info.level}';
+		if(org_level == '4'){
+			$('.lui-support-text').hide();
+		}
+	})
+	
+	function submitAnswer(){
+		$.showLading();
+		var examinations_id = $("#examinations_id").val();
+		var StudentQuestion = [];
+		var Answer = {1:'A',2:'B',3:'C',4:'D'};
+		
+		$('.lui-exam-main').each(function(i,e){
+			var data = {};
+			var question_id = $(e).find('.lui-question-item').attr('question_id');
+			data.QuestionId = question_id;
+			data.StudentAnswer = Answer[keyList[i+1]] ? Answer[keyList[i+1]] : '';
+			StudentQuestion.push(data);
+		})
+		
+		var examinations_result = JSON.stringify(StudentQuestion);
+		
+		$.ajax({
+			url: "{:url('index/Index/result_info')}",
+			type: "post",
+			dataType: "json",
+			cache: false,
+			data: {
+				examinations_result: examinations_result,
+				examinations_id: examinations_id
+			},
+			success: function (info) {
+				$.hideLading();
+				if(info.status == 1){
+					$.showMsg('提交成功！');
+					setTimeout(function(){
+						location.href = '{:url("index/index/exam_result")}'+'?eid='+info.eid;
+					},500);
+				}else{
+					$.showMsg(info.msg);
+				}
+			}
+		});
+		
+	}
+	
+	function renderDtk(type){
+		if(type == 'show'){
+			var html = '';
+			$.each(keyList,function(i,v){
+				var active = v ? 'lui-active' : '';
+				html += '<div class="lui-exam-item"><div data="'+ i +'" class="lui-exam-option '+ active +'">'+ i +'</div></div>';
+			})
+			$('.lui-exam-list').html(html);
+		
+			$('#dtk').show();
+			$('#dtk .lui-moday-content').slideDown('linear',function(){
+				$('#dtk .lui-moday-tuckup').show();
+				$('#dtk .lui-exam-list').css('overflow','auto');
+				$('.lui-nav-dtk').addClass('lui-active');
+			});
+		}else if(type == 'hide'){
+			$('#dtk .lui-exam-list').css('overflow','hidden');
+			$('#dtk .lui-moday-content').slideUp('linear',function(){
+				$('#dtk').hide();
+				$('#dtk .lui-moday-tuckup').hide();
+				$('.lui-nav-dtk').removeClass('lui-active');
+			});
+		}
+	}
+</script>
+{/block}

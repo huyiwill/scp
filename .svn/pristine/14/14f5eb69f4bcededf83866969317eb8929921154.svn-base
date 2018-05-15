@@ -1,0 +1,116 @@
+{extend name="base" /}
+{block name="body"}
+	<style>
+		.level-text {color: #00a0e9;}
+		.tips-box {padding: 20px 30px 10px;text-align: center;}
+	</style>
+	<div class="layui-body">
+		<div class="layui-tab layui-tab-brief">
+			<ul class="layui-tab-title">
+				<li class="layui-this">机构设置</li>
+			</ul>
+			<div class="layui-tab-content">
+				<div class="layui-tab-item layui-show">
+					<form class="layui-form form-container" action="{:url('orgadmin/index/edit')}" method="post">
+						<input type="hidden" name="id" value="{$data.id}" class="layui-input">
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">机构Logo</label>
+							<div class="layui-input-block">
+								<img src="{$data.logo}" style="width:100px;height:auto;" class="imgdemo">
+								{if condition="$data.auth.edit_logo"}
+								<input type="hidden" name="logo" value="{$data.logo}" class="layui-input layui-input-inline" id="thumb">
+								<input type="file" name="file" class="layui-upload-file">
+								{/if}
+							</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">机构名称</label>
+							<div class="layui-input-block">
+								<input type="text" name="name" value="{$data.name}" required  lay-verify="required" placeholder="请输入机构名称" class="layui-input">
+							</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">联系方式</label>
+							<div class="layui-input-block">
+								<input type="text" name="mobile" value="{$data.mobile}" required lay-verify="required" placeholder="请输入联系方式" class="layui-input">
+							</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">宣传内容</label>
+							<div class="layui-input-block">
+								<textarea name="pub_text" placeholder="" class="layui-textarea" id="pub_text">{$data.pub_text}</textarea>
+							</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="*">保存</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+{/block}
+{block name="js"}
+<script src="__JS__/ueditor/ueditor.config.js"></script>
+<script src="__JS__/ueditor/ueditor.all.js"></script>
+{/block}
+{block name="script"}
+<script>
+	var ue = UE.getEditor('pub_text');
+	ue.ready(function() {
+		ue.setHeight(350);
+		$('.reset').on('click',function(){
+			ue.setContent('');
+			$('textarea[name="pub_text"]').html('');
+		})
+	});
+	
+	var form = layui.form();
+	form.on('submit(*)', function(data){
+		var pub_text = data.field['pub_text'];
+		var level = '{$data.level}';
+		
+		if(Number(level) < 3){
+			if(pub_text.indexOf('<a') > -1 || pub_text.indexOf('</a>') > -1 || pub_text.indexOf('href') > -1){
+				var tipsHtml = '<div class="tips-box"><p>您当前的用户等级为 <span class="level-text">{$data.level_name}</span></p>'
+						 + '<p>升级到 <span class="level-text">钻石用户</span> 可支持跳转链接</p>'
+						 + '<p>请联系软云商务 <span class="level-text">400-182-6266</span></p></div>';
+						 
+				layer.open({
+					type: 1,
+					title: '用户升级',
+					content: tipsHtml,
+					btn: ['确定'],
+					success: function(layero, index){
+						
+					}
+				})
+				return false;
+			}
+		}
+		
+		$.ajax({
+			url: data.form.action,
+			type: data.form.method,
+			data: $(data.form).serialize(),
+			success: function (info) {
+				if (info.code === 1) {
+					setTimeout(function () {
+						location.href = info.url;
+					}, 1000);
+				}
+				layer.msg(info.msg);
+			}
+		});
+		return false;
+	});
+</script>
+{/block}

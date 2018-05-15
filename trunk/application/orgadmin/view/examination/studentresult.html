@@ -1,0 +1,286 @@
+{extend name="base" /}
+{block name="body"}
+<style>
+
+</style>
+<div class="ui-mask">
+ <img src="__IMAGES__/student.jpg" width="100%">
+</div>
+<div class="layui-body explain_box">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+          {if condition="$isrecord eq 1"}
+            <li class=""><a href="{:url('examination/examrecord','id='.$exam['id'])}">答题记录</a></li>
+            <li class="layui-this">学生成绩</li>
+          {else/}
+            <li class=""><a href="{:url('orgadmin/examination/index')}">题集列表</a></li>
+            <li class=""><a href="{:url('orgadmin/examination/statistics','id='.$exam['id'])}">答题统计</a></li>
+            <li class="layui-this">学生成绩</li>
+          {/if}
+        </ul>
+
+<div class="" style=" padding-right:230px; box-sizing:border-box; position:relative;">   
+ <div class="rycg_warp">
+ 	
+            <div class="title_div">{$info.answer_name}-{$subject[$info['subject']]['stageName']}{$subject[$info['subject']]['name']}-{:gdata('examination',$info['examination_id'],'name')}</div>
+            <div class="csbaseinfo">题目数量：{:gdata('examination',$info['examination_id'],'exam_num')}&nbsp;&nbsp;知识点数量：{$tknowcount?:0}&nbsp;&nbsp;综合难度系数：
+            {if condition="$levels eq 1"}容易{/if}
+            {if condition="$levels eq 2"}较易{/if}
+            {if condition="$levels eq 3"}一般{/if}
+            {if condition="$levels eq 4"}较难{/if}
+            {if condition="$levels eq 5"}困难{/if}
+            </div>
+            <h3 class="cj_h3">知识点占比</h3>
+    <div id="container" style="min-width:300px;height:300px"></div>
+    <div class="cj_score">
+    	<ul>
+        	<li>
+                <p><b>{:floatval($info.score)}</b>/{$exam.exam_num}</p>
+                <p>他的成绩</p>
+            </li>
+            <li style="border-left:1px solid #dedede;">
+                <p><b>{$avg2?:0}</b>/{$exam.exam_num}</p>
+                <p>平均成绩</p>
+            </li>
+        </ul>
+    </div>
+    <div class="empty_line"></div>
+    <h3 class="cj_h3">当前学生排名</h3>
+    
+    <div class="ui-jzt">
+     {volist name="paimingjson" id="pm" key="p"}
+      <div class="ui-jzt-div ui-jzt-{$p}"><img src="__IMAGES__/{$p}.png">
+       <div class="ui-jzt-line ui-jzt-l{$p}" data-top="23" data-active="{$pm.active}"><span class="ui-jzt-solid"></span><span class="line-main"></span><span class="line-text">{$pm.name}</span></div>
+      </div>
+     {/volist}
+    </div>
+    
+    
+   <!-- <div id="pyramid" style="width:500px; height: 300px; margin: 0 auto"></div>-->
+ </div>
+ <div class="series_title" style="border-bottom:none;"><b></b>知识点掌握分析</div>
+ <table class="layui-table" style="margin:0;">
+    <thead>
+        <tr>
+            <td width="20%" align="center">掌握分析</td>
+            <td width="20%" align="center">二级知识点</td>
+            <td width="20%" align="center">三级知识点</td>
+            <td width="20%" align="center">难度系数</td>
+            <td width="20%" align="center">题目数</td>
+        </tr> 
+    </thead>
+    {if condition="$KnowledgePointMasterAnalysis neq ''"}
+    {volist name="KnowledgePointMasterAnalysis" id="kw"}
+    <tr>
+        <td align="center">
+         {if condition="$kw->MasterAnalysis eq 1"}已掌握{/if}
+         {if condition="$kw->MasterAnalysis eq 2"}部分掌握{/if}
+         {if condition="$kw->MasterAnalysis eq 3"}未掌握{/if}
+        </td>
+        <td align="center">{$kw->ParentKnowledgePointName?:'--'}</td>
+        <td align="center">{$kw->KnowledgePointName?:'--'}</td>
+        <td align="center">
+         {if condition="$kw->KnowledgePointLevel eq 1"}容易{/if}
+         {if condition="$kw->KnowledgePointLevel eq 2"}较易{/if}
+         {if condition="$kw->KnowledgePointLevel eq 3"}一般{/if}    
+         {if condition="$kw->KnowledgePointLevel eq 4"}较难{/if}    
+         {if condition="$kw->KnowledgePointLevel eq 5"}困难{/if}        
+        </td>
+        <td align="center">{$kw->NumberOfQuestion}</td>
+    </tr>
+    {/volist}
+    {/if}
+ </table>
+ <div class="series_title" style=" margin:10px auto;"><b></b>答题记录</div>
+ <!--dati_hover-->
+ 
+ {if condition="$tobj neq ''"}
+ {volist name="tobj" id="t" key="tt"}
+ <div class="dati_items" id="dati_items_{$t['QuestionId']}">
+ 	<dl class="item_dl">
+    	<dt class="sortpadd"><span class="sort_tag">{$tt}.</span>{$t.QuestionContent|deletep}</dt>
+        {volist name="t['Options']" id="ot"}
+         <dd class="sortpadd"><span class="sort_tag">{$ot['QuestionOptionId']}</span> {$ot['QuestionOptionText']}</dd>
+        {/volist}
+    </dl>
+    <div class="you_answer">你的选择：<span>
+     {php}
+      $ans = ganswer($question_reult,$t['QuestionId']);
+      if ( $ans == $t['Answer'] ) {
+        echo $ans;
+      } else {
+        echo '<font color="#f95d60">'.$ans.'</font>'; 
+      }
+     {/php}
+     
+     
+    
+    </span> , 正确答案：<span>{$t.Answer}</span> <button class="jiexi_btn" type="button">展开解析<img src="__IMAGES__/zhankai_icon_s.png" /></button></div>
+    <div class="answer_jiexi" style="display:none;">
+    	<h2 class="jiexi_h2">解析</h2>
+        <div class="jiexi_info">{$t.Analysis}</div>
+        <div class="hide_jiexi"><img src="__IMAGES__/ry_icon04.png" height="14" width="20" /></div>
+    </div>
+ </div>
+ {/volist}
+ {/if}
+        
+</div>
+
+
+</div>
+
+
+<!----->
+
+<div class="examBoxs_right" id="sidebar" style="position:fixed; top:92px; right:10px;">
+     <div class="answer_card"  style="box-shadow:none !important; border:solid 1px #dcdcdc;">
+        <h2>答题卡</h2>
+        <div class="timu_xuhao" style="margin-bottom:10px;">
+          {if condition="$QuestionResult neq ''"}
+           {volist name="QuestionResult" id="qr" key="q"}
+            {if condition="$qr->IsCorrect eq 1"}
+              <a href="#dati_items_{$qr->QuestionId}" class="green">{$q}</a>
+            {else/}
+              {if condition="ganswer($question_reult,$qr->QuestionId) eq '未填'"}
+               <a href="#dati_items_{$qr->QuestionId}">{$q}</a>
+              {else/}
+               <a href="#dati_items_{$qr->QuestionId}" class="red">{$q}</a>
+              {/if}
+            {/if}
+            {/volist}
+           {/if}
+        </div>
+       
+     </div>
+ </div>
+
+
+</div>
+{/block}
+{block name="js"}
+
+<script src="__JS__/highcharts/highcharts.js"></script>
+<script src="__JS__/highcharts/funnel.js"></script>
+<script>
+      $(document).ready(function(e) {
+		showjzt();
+      });
+	  function showjzt(){
+        var left = parseInt($('.ui-jzt').width()/2);
+		$(".ui-jzt .ui-jzt-line").each(function(iq, eq) {
+          var t = $(this).data('top');
+		  var active = $(this).data('active');
+		  if ( active ) {
+		    $(this).show().css({'top':t,'left':left});
+		  } else {
+		    $(this).hide().css({'top':t,'left':left});
+		  }
+        }); 
+	  }
+	  
+	  $(window).resize(function(e) {
+        showjzt();   
+      });
+	  
+	  if( level < 3 ) { //不能看
+		$(".ui-mask").show();
+		$(".layui-body").hide().remove('*');
+		layer.open({
+			type: 1,
+			title: '用户升级',
+			content: '<div class="ui-update">您当前的等级为 <b>'+levname+'</b><br/>升级到<b>钻石用户</b>才能使用该功能<br/>洽谈请联系软云商务 <b>400-182-6266</b></div>',
+			area: ['300px', '200px'],
+			cancel: function(){ 
+			  window.history.go(-1);
+			}
+		});
+	 }
+	 $('.dati_items').click(function(){
+		 $('.dati_items').removeClass('dati_hover')
+		 $(this).addClass('dati_hover');
+	 })
+	 // 收起  展开
+	 $('.jiexi_btn').click(function(){
+		 if($(this).parent().parent().find('.answer_jiexi').is(":visible")){
+			 $(this).html('展开解析<img src="__IMAGES__/zhankai_icon_s.png" />');
+			 $(this).parent().parent().find('.answer_jiexi').hide();
+		 }else{
+			 $(this).html('收起解析<img src="__IMAGES__/shousuo_icon_s.png" />');
+			 $(this).parent().parent().find('.answer_jiexi').show();
+		 }
+	 })
+	 // 收起
+	 $('.hide_jiexi').click(function(){
+		 $(this).parent().hide();
+	 	$(this).parent().parent().find('.jiexi_btn').html('展开解析<img src="__IMAGES__/zhankai_icon_s.png" />');
+	 })
+	 
+	var chart = null;
+	$(function () {
+		$('#container').highcharts({
+			chart: {
+				plotShadow: false,
+				spacing : [0, 0 , 0, 0]
+			},
+			colors: ['#c23531', '#2f4554', '#9fdabf','#d48265','#91c7ae'],
+			title: {
+				floating:true,
+				text: '',
+				style:{ "color": "#666", "fontSize": "13px" },
+			},
+			tooltip: {
+				pointFormat: '{series.name}: {point.percentage:.1f}%'
+			},
+			plotOptions: {
+				pie: {
+					allowPointSelect: true,
+					cursor: 'pointer',
+					dataLabels: {
+						enabled: true,
+						format: '<font color="#666666">{point.name}</font>: {point.percentage:.1f} %',
+						style: {
+							color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || '#666666',
+							fontWeight:"normal"
+						}
+					},
+					point: {
+						events: {
+							mouseOver: function(e) {
+								chart.setTitle({
+									//text: e.target.name+ '\t'+ e.target.y + ''
+									text: e.target.name
+								});
+							}
+						}
+					},
+				}
+			},
+			series: [{
+				type: 'pie',
+				innerSize: '60%',
+				name: '占比',
+				data: {$KnowledgePointScoresx}
+			}]
+		}, function(c) {
+			// 环形图圆心
+			var centerY = c.series[0].center[1],
+				titleHeight = parseInt(c.title.styles.fontSize);
+			c.setTitle({
+				y:centerY + titleHeight/2
+			});
+			chart = c;
+		});
+	});
+	
+ $(".layui-body").scroll(function(e) {
+   var t = $(".layui-body").scrollTop();
+   if ( t > 100 ) {
+	 $("#sidebar").css({'top':60});
+   } else {
+     $("#sidebar").css({'top':92});
+   }
+ });
+</script>
+{/block}

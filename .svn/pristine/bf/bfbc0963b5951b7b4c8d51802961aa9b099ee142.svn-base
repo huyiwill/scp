@@ -1,0 +1,156 @@
+{extend name="base" /}
+{block name="css"}
+<style>
+	.lui-tab {border-top: 1px solid #edeff0;}
+	.lui-content {padding: 132px 0 45px;}
+	.lui-tab-title {margin: 15px;padding: 0;cursor: pointer;text-align: center;list-style: none;}
+	.lui-tab-title li {text-align: center;display: inline-block;vertical-align: middle;width: 33.33%;height: 40px;line-height: 40px;margin: 0 -3px 0 -2px;color: #4782f6;font-size: 16px;transition: all .25s;}
+	.lui-tab-title li.lui-left {border-top-left-radius: 10px;border-bottom-left-radius: 10px;border: 1px solid #4782f6;border-right: 0;}
+	.lui-tab-title li.lui-middle {border: 1px solid #4782f6;}
+	.lui-tab-title li.lui-right {border-top-right-radius: 10px;border-bottom-right-radius: 10px;border: 1px solid #4782f6;border-left: 0;}
+	.lui-tab-title li.lui-this {background-color: #4782f6;color: #fff;}
+	.lui-tab-title li:active {background-color: #4782f6;color: #fff;}
+	.lui-tab-item {display: none;overflow-y: auto;}
+	.lui-tab-item.lui-show {display: block;}
+	.lui-subject-title {background-color: #f3f3f3;color: #4782f6;font-size: 16px;height: 45px;line-height: 45px;padding-left: 10px;}
+	.lui-subject-option {display: inline-block;margin: 0 -3px 0 -2px;width: 33.33%;text-align: center;padding: 18px 0;transition: all .35s;}
+	.lui-subject-icon {display: inline-block;width: 70px;height: 70px;text-align: center;background-color: #4782f6;border-radius: 50%;margin-bottom: 10px;}
+	.lui-subject-icon img {width: 34px;position: relative;top: 18px;}
+	.lui-subject-name {font-size: 16px;color: #25272c;}
+	.lui-subject-option.option-u {border-left: 1px solid;border-right: 1px solid;border-image: -webkit-linear-gradient(to bottom, #fff 20%, #ddd) 30 30;border-image: -moz-linear-gradient(to bottom, #fff 20%, #ddd) 30 30;border-image: linear-gradient(to bottom, #fff 20%, #ddd) 30 30;}
+	.lui-subject-option.option-l {border-top: 1px solid;border-bottom: 1px solid;border-image: -webkit-linear-gradient(to left, #ddd, #fff 80%) 30 30;border-image: -moz-linear-gradient(to left, #ddd, #fff 80%) 30 30;border-image: linear-gradient(to left, #ddd, #fff 80%) 30 30;}
+	.lui-subject-option.option-m {border: 1px solid #ddd;}
+	.lui-subject-option.option-r {border-top: 1px solid;border-bottom: 1px solid;border-image: -webkit-linear-gradient(to right, #ddd, #fff 80%) 30 30;border-image: -moz-linear-gradient(to right, #ddd, #fff 80%) 30 30;border-image: linear-gradient(to right, #ddd, #fff 80%) 30 30;}
+	.lui-subject-option.option-b {border-left: 1px solid;border-right: 1px solid;border-image: -webkit-linear-gradient(to top, #fff 20%, #ddd) 30 30;border-image: -moz-linear-gradient(to top, #fff 20%, #ddd) 30 30;border-image: linear-gradient(to top, #fff 20%, #ddd) 30 30;}
+	.lui-subject-option:active {background-color: #f1f1f1;}
+	.lui-tab-nav {position: fixed;width: 100%;background-color: #fff;top: 60px;z-index: 2;}
+	.no-data {font-size: 18px;text-align: center;color: #aaa;padding-top: 50px;}
+	.lui-tab-title .lui-one {border-radius: 10px;}
+	@media (max-width: 320px) {
+		.lui-tab-nav {top: 50px;}
+		.lui-tab-title li {font-size: 14px;height: 35px;line-height: 35px;}
+		.lui-content {padding-top: 117px;padding-bottom: 40px;}
+		.lui-subject-title {font-size: 14px;height: 40px;line-height: 40px;}
+		.lui-subject-icon {width: 60px;height: 60px;}
+		.lui-subject-icon img {width: 28px;top: 16px;}
+		.lui-subject-name {font-size: 14px;}
+	}
+</style>
+{/block}
+{block name="body"}
+	<div class="lui-tab-nav">
+		<ul class="lui-tab-title">
+			<li data-rank="0" class="lui-left lui-this">小学</li>
+			<li data-rank="1" class="lui-middle">初中</li>
+			<li data-rank="2" class="lui-right">高中</li>
+		</ul>
+	</div>
+	<div class="lui-content">
+		<div class="lui-tab">
+			<div class="lui-tab-content">
+				{foreach name="data.list" item="vo"}
+					<div class="lui-tab-item {if condition='$key == pri'}lui-show{/if}">
+						{if condition="$vo.grade"}
+						{foreach name="vo.grade" item="vo2"}
+						<div class="lui-subject-body">
+							<div class="lui-subject-title">{$key}</div>
+							<div class="lui-subject-main">
+								{foreach name="$vo2" item="vo3"}
+								<div data-url="{:url('Index/index/examinations',['org_id'=>$org_info.org_id,'subject_id'=>$vo3.sid,'grade_id'=>$vo3.gid])}" class="lui-subject-option">
+									<div class="lui-subject-icon">
+										<img src="/public/uploads/system/subject-{$vo3.icon}.png" />
+									</div>
+									<div class="lui-subject-name">
+										{$vo3.name}<span>（{$vo3.num}）</span>
+									</div>
+								</div>
+								{/foreach}
+							</div>
+						</div>
+						{/foreach}
+						{/if}
+					</div>
+				{/foreach}
+			</div>
+		</div>
+	</div>
+{/block}
+{block name="script"}
+<script>
+	$(function(){
+		var status = '{$data.status}';
+		
+		$('.lui-tab-title').on('click','li',function(){
+			var rank = $(this).attr('data-rank');
+			$('.lui-tab-title li').removeClass('lui-this');
+			$(this).addClass('lui-this');
+			$('.lui-tab-item').removeClass('lui-show');
+			$('.lui-tab-item').eq(rank).addClass('lui-show');
+		})
+		
+		if(status == '2'){
+			var msg = '{$data.msg}';
+			$.showForbid(msg);
+		}
+		
+		var org_level = '{$org_info.level}';
+		if(org_level == 4){
+			$('.lui-content').css('padding-bottom','0');
+		}
+		
+		$('.lui-subject-option').on('click',function(){
+			var url = $(this).attr('data-url');
+			location.href = url;
+		})
+		
+		var list = {:json_encode($data.list)};
+		getTabNav(list);
+	})
+	
+	function getTabNav(list){
+		var l1 = false,l2 = false,l3 = false;
+		var html = '';
+		$('.lui-tab-item').removeClass('lui-show');
+		
+		$.each(list,function(i,v){
+			if(i == 'pri' && !(v.grade instanceof Array)){
+				l1 = true;
+			}
+			if(i == 'mid' && !(v.grade instanceof Array)){
+				l2 = true;
+			}
+			if(i == 'high' && !(v.grade instanceof Array)){
+				l3 = true;
+			}
+		})
+		
+		if(l1 && l2 && l3){
+			html = '<li data-rank="0" class="lui-left lui-this">小学</li><li data-rank="1" class="lui-middle">初中</li><li data-rank="2" class="lui-right">高中</li>';
+			$('.lui-tab-item').eq(0).addClass('lui-show');
+		}else if(l1 && !l2 && !l3){
+			html = '<li data-rank="0" class="lui-one lui-this">小学</li>';
+			$('.lui-tab-item').eq(0).addClass('lui-show');
+			$('.lui-tab-title').css('text-align','left');
+		}else if(l1 && l2 && !l3){
+			html = '<li data-rank="0" class="lui-left lui-this">小学</li><li data-rank="1" class="lui-right">初中</li>';
+			$('.lui-tab-item').eq(0).addClass('lui-show');
+		}else if(!l1 && l2 && l3){
+			html = '<li data-rank="1" class="lui-left lui-this">初中</li><li data-rank="2" class="lui-right">高中</li>';
+			$('.lui-tab-item').eq(1).addClass('lui-show');
+		}else if(!l1 && !l2 && l3){
+			html = '<li data-rank="2" class="lui-one lui-this">高中</li>';
+			$('.lui-tab-item').eq(2).addClass('lui-show');
+			$('.lui-tab-title').css('text-align','left');
+		}else if(l1 && !l2 && l3){
+			html = '<li data-rank="0" class="lui-left lui-this">小学</li><li data-rank="2" class="lui-right">高中</li>';
+			$('.lui-tab-item').eq(0).addClass('lui-show');
+		}else if(!l1 && !l2 && !l3){
+			html = '';
+			$('.lui-tab-item').eq(0).addClass('lui-show');
+			$('.lui-tab-item').eq(0).html('<div class="no-data">暂无数据</div>');
+			$('.lui-content').css('padding-top',60);
+		}
+		$('.lui-tab-title').html(html);
+	}
+</script>
+{/block}

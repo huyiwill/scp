@@ -1,0 +1,135 @@
+{extend name="base" /}
+{block name="body"}
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class=""><a href="{:url('admin/organ/index')}">机构管理</a></li>
+            <li class=""><a href="{:url('admin/organ/add')}">添加机构</a></li>
+			<li class="layui-this">编辑机构</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form form-container" action="{:url('admin/organ/edit')}" method="post">
+					<input type="hidden" name="id" value="{$data.id}" class="layui-input">
+					
+					<div class="layui-form-item">
+                        <label class="layui-form-label">机构Logo</label>
+                        <div class="layui-input-block">
+                            <img src="{$data.logo}" style="width:100px;height:auto;" class="imgdemo">
+                            <input type="hidden" name="logo" value="{$data.logo}" class="layui-input layui-input-inline" id="thumb">
+                            <input type="file" name="file" class="layui-upload-file">
+                        </div>
+                    </div>
+					<div class="layui-form-item">
+                        <label class="layui-form-label">* 机构名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" value="{$data.name}" maxlength="100" required lay-verify="orgname" placeholder="请输入机构名称" class="layui-input">
+                        </div>
+                    </div>
+					<div class="layui-form-item">
+                        <label class="layui-form-label">* 总机构编号</label>
+                        <div class="layui-input-block">
+                            <input type="number" name="org_id" value="{$data.org_id}" required lay-verify="number|orgid" placeholder="请输入总机构编号" class="layui-input">
+                        </div>
+                    </div>
+					<div class="layui-form-item">
+                        <label class="layui-form-label">* 机构类型</label>
+                        <div class="layui-input-block">
+							<select id="level" name="level" lay-verify="orgtype">
+                                <option value="0">请选择机构类型</option>
+								{foreach name="level_list" item="vo"}
+                                <option value="{$key}" {if condition="$data.level==$key"} selected="selected"{/if}>{$vo}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+					<div class="layui-form-item">
+                        <label class="layui-form-label">* 有效期</label>
+                        <div class="layui-input-block">
+							<input type="text" name="expiry_time" id="expiry_time" value="{$data.expiry_time}" required lay-verify="expiry"  placeholder="请选择有效期" class="layui-input">
+                        </div>
+                    </div>
+					<div class="layui-form-item">
+                        <label class="layui-form-label">联系方式</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="mobile" value="{$data.mobile}" required lay-verify="tel" placeholder="请输入联系方式" class="layui-input">
+                        </div>
+                    </div>
+					<div class="layui-form-item">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-block">
+                            <textarea name="desc" placeholder="填写备注信息..." class="layui-textarea" id="desc">{$data.desc}</textarea>
+                        </div>
+                    </div>
+					
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="*">保存</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="js"}
+<script src="__JS__/ueditor/ueditor.config.js"></script>
+<script src="__JS__/ueditor/ueditor.all.js"></script>
+{/block}
+{block name="script"}
+<script>
+	var laydate = layui.laydate;
+	var form = layui.form();
+	
+	var start = {
+		min: laydate.now(),
+		max: '2049-06-16 23:59:59',
+		istoday: false,
+		choose: function(datas){
+			
+		}
+	};
+	document.getElementById('expiry_time').onclick = function(){
+		start.elem = this;
+		laydate(start);
+	}
+	
+	form.verify({
+		orgname: function(value, item){
+			if($.trim(value) == '' || $.trim(value) == null){
+				return '请填写机构名称';
+			}
+		},
+		orgid: function(value, item){
+			if($.trim(value) == '' || $.trim(value) == null){
+				return '请填写机构编号';
+			}
+		},
+		orgtype: function(value, item){
+			if(value == 0 || value == null){
+				return '请选择机构类型';
+			}
+		}, 
+		expiry: function(value, item){
+			if($.trim(value) == '' || $.trim(value) == null){
+				return '请选择有效期';
+			}
+		},
+		tel: function(value, item){
+			if(value != ''){
+				var mobile =  /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(14[0-9]{1})|(17[0-9]{1}))+\d{8})$/;
+				var tel = /^\d{3,4}-?\d{7,9}$/;
+				var tel2 = /^\d{3,4}-?\d{3,4}-?\d{3,4}$/;
+				
+				if(!mobile.test(value) && !tel.test(value) && !tel2.test(value)){
+					return '请输入有效的联系方式';
+				}
+			}
+		}
+	});
+	//var ue = UE.getEditor('pub_text');
+</script>
+{/block}

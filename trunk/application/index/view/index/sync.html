@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="Cache-Control" content="no-transform" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<title>数据同步</title>
+	<link rel="stylesheet" href="__CSS__/lui-modal.css">
+    <link rel="stylesheet" href="__JS__/layui/css/layui.css" media="all">
+	<style>
+		*{ -webkit-tap-highlight-color: rgba(0,0,0,0);-webkit-tap-highlight-color: transparent;}  
+		body {margin: 0;font-family: "微软雅黑";}
+		header {padding: 15px;position: fixed;width: calc(100% - 30px);background-color: #fff;top: 0;z-index: 10;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;}
+		.sync{ width:300px; height:300px; border-radius:50%; background-color:#b9282b; position:fixed; top:50%; left:50%; margin-top:-150px; margin-left:-150px; line-height:300px; font-size:60px; text-align:center; color:#fff;}
+	</style>
+</head>
+<body>
+  
+  <div class="sync"><span>{$successcount?:0}</span>/<font style="font-size:14px;">{$acount}</font></div>
+  
+
+</body>
+<script src="__JS__/jquery.min.js"></script>
+<script src="__JS__/lui-modal.js"></script>
+<script src="__JS__/layui/lay/dest/layui.all.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(e) {
+    layer.msg('开始同步中..');
+	window.page = 1;
+	function sync(){
+		var succ  = parseInt($(".sync span").text());
+		$.post('{:url("index/index/syncdata")}',{'page':window.page},function(data){
+		  if ( data.state == 1 ) {
+			succ += data.success;
+			$(".sync span").text(succ);
+			window.page++;
+		  } else {
+			window.page++;
+		  }
+		  setTimeout(function(){
+		    sync();
+		  },1500);
+		},'json')
+	}
+	sync();
+  });
+</script>
+</html>

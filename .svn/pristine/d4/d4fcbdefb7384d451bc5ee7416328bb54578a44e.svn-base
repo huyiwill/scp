@@ -1,0 +1,30 @@
+[ 2018-01-19T08:22:17+08:00 ] ::1 ::1 GET /SCP/branches/prod/
+[ log ] localhost/SCP/branches/prod/ [运行时间：0.410614s][吞吐率：2.44req/s] [内存消耗：2,981.30kb] [文件加载：53]
+[ info ] [ LANG ] F:\wamp\wamp\www\SCP\branches\prod\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => '',
+    1 => NULL,
+    2 => NULL,
+  ),
+)
+[ info ] [ HEADER ] array (
+  'host' => 'localhost',
+  'connection' => 'keep-alive',
+  'upgrade-insecure-requests' => '1',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+  'referer' => 'http://localhost/SCP/branches/',
+  'accept-encoding' => 'gzip, deflate, sdch, br',
+  'accept-language' => 'zh-CN,zh;q=0.8',
+  'cookie' => 'bdshare_firstime=1479954607827; __guid=111872281.1539722380212149500.1503705682894.5486; InEk_2132_nofavfid=1; Hm_lvt_ee7bf77607becfc0f2583781081bd70c=1507767357; InEk_2132_ulastactivity=c3f61aMjKt0YTBbQFrZj%2FGaymif5%2FgUeiAyprUevIdjXzGqYxu2V; InEk_2132_lastcheckfeed=1%7C1507896436; InEk_2132_smile=1D1; pgv_pvi=8976187392; Hm_lvt_95beec484cfa02c91462ae08827c6b03=1509584599,1511251283; UM_distinctid=1602945eedf2d2-0b64604e42fbf6-6b1b1279-1fa400-1602945eee02ce; CNZZDATA3152436=cnzz_eid%3D36472147-1495419630-http%253A%252F%252Flocalhost%252F%26ntime%3D1512537629; Hm_lvt_438ab112635087e6bfa6b8f2460aabd2=1512691948; Hm_lvt_290578c838837356a5dcbcbb971d7399=1514422828,1514968517,1515134795,1515651110; bh_RememberAuth=7e65947e656292f9ac93fa44507d708c; bh_RememberUser=tangxiaoxiao; bh_RememberAuthId=1; bh_XFKb9keaNa6OCw=T2RQZmsxMjM0NTZZOUY3YQ%3D%3D; bh_kqgU3z8lFziDTM=ZlJXM1gxMjM0NTZDd0lSMQ%3D%3D; bh_52KI7r78at6BOR=M0I5UU4xMjM0NTY1TDZIeQ%3D%3D; bh_bhlogininfo=think%3A%7B%22username%22%3A%22admin%22%2C%22passkey%22%3A%2252KI7r78at6BOR%22%7D; Hm_lvt_f6b06c4cb3e837682fc89a82b8838eaa=1516265855,1516320933; Hm_lpvt_f6b06c4cb3e837682fc89a82b8838eaa=1516320933; PHPSESSID=de3ira56iuo4ed6okkjimioiq5',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ DB ] INIT mysql
+[ info ] [ LOG ] INIT File
+[ error ] [0]方法参数错误:org_id[F:\wamp\wamp\www\SCP\branches\prod\thinkphp\library\think\App.php:296]
+
+---------------------------------------------------------------

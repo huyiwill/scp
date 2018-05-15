@@ -1,0 +1,33 @@
+{extend name="base" /}
+{block name="body"}
+	<div class="layui-body">
+		<div class="layui-tab layui-tab-brief">
+			<ul class="layui-tab-title">
+				<li class="layui-this">机构设置</li>
+			</ul>
+			<div class="layui-tab-content">
+				<div class="layui-tab-item layui-show">
+					<form class="layui-form form-container" action="{:url('admin/user/update')}" method="post">
+						<input type="hidden" name="id" value="" class="layui-input">
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">名称</label>
+							<div class="layui-input-block">
+								<input type="text" name="username" value="" required  lay-verify="required" placeholder="请输入用户名" class="layui-input">
+							</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">机构Logo</label>
+							<div class="layui-input-block">
+								<img src="{$data.logo}" style="width:100px;height:auto;" class="imgdemo">
+								<input type="hidden" name="logo" value="" class="layui-input layui-input-inline" id="thumb">
+								<input type="file" name="file" class="layui-upload-file">
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+{/block}

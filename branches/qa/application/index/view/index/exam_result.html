@@ -1,0 +1,318 @@
+{extend name="base" /}
+{block name="css"}
+<style>
+	.lui-content {
+		padding: 60px 0 20px;
+	}
+	.lui-result-nav {
+		width: calc(100% - 30px);
+		margin: 0 15px;
+		height: 70px;
+		line-height: 70px;
+		text-align: center;
+		background-color: #fe7404;
+		color: #fff;
+		font-size: 18px;
+	}
+	.correct_num {
+		font-size: 28px;
+		margin-left: 5px;
+		margin-right: 2px;
+	}
+	.total_num {
+		margin-left: 2px;
+	}
+	.lui-result-temp {
+		padding: 0 15px;
+	}
+	.lui-result-temp-main {
+		padding: 15px 0;
+	}
+	#best {
+		border-bottom: 1px solid #edeff0;
+	}
+	.lui-result-temp-title {
+		font-size: 16px;
+		color: #25272c;
+		margin-bottom: 10px;
+	}
+	/*
+	.lui--resulttemp-left {
+		display: inline-block;
+		margin: 0 -2px;
+		width: 50%;
+	}
+	.lui--resulttemp-right {
+		display: inline-block;
+		margin: 0 -2px;
+		width: 50%;
+	}
+	*/
+	.lui-result-ratio {
+		border: 1px dashed #edeff0;
+		height: 5px;
+		border-radius: 3px;
+	}
+	.lui-ratio {
+		background-color: #4782f6;
+		height: 5px;
+		border-radius: 3px;
+	}
+	.lui-result-score {
+		margin-top: 10px;
+	}
+	.lui-subject {
+		color: #4782f6;
+		font-size: 14px;
+	}
+	.lui-score {
+		color: #aaa;
+		font-size: 14px;
+	}
+	.lui-organ-info-main {
+		width: calc(100% - 60px);
+		margin: 0 15px 20px;
+		border: 1px dashed #edeff0;
+		padding: 15px;
+	}
+	.lui-organ-logo img {
+		width: 60px;
+		vertical-align: middle;
+		margin-right: 10px;
+	}
+	.organ-name {
+		font-size: 21px;
+		color: #25272c;
+	}
+	.lui-organ-intr {
+		font-size: 16px;
+		color: #25272c;
+		line-height: 1.6;
+		margin: 15px 0;
+	}
+	.lui-organ-intr p {
+		margin: 3px 0;
+	}
+	.lui-organ-phone {
+		text-align: center;
+		border-top: 1px solid #edeff0;
+		padding-top: 10px;
+		color: #aaa;
+		font-size: 16px;
+	}
+	.lui-result-title {
+		height: 45px;
+		line-height: 45px;
+		color: #4782f6;
+		background-color: #f3f3f3;
+		padding-left: 15px;
+		font-size: 16px;
+	}
+	.lui-result-list {
+		padding: 15px;
+		font-size: 16px;
+		color: #25272c;
+		line-height: 1.6;
+	}
+	.lui-option-item {
+		padding: 5px 0;
+		margin: 10px 0 5px;
+		border-top: 1px solid #edeff0;
+		border-bottom: 1px solid #edeff0;
+	}
+	.lui-option-item p {
+		margin: 5px 0;
+	}
+	.lui-answer-item {
+		border-bottom: 1px solid #edeff0;
+		padding: 5px 0 10px;
+		margin-bottom: 10px;
+	}
+	.lui-answer-item {
+		font-size: 16px;
+		color: #25272c;
+	}
+	.lui-answer {
+		color: #87d37b;
+	}
+	.lui-error {
+		color: #ff6743;
+	}
+	.correct-answer {
+		margin-left: 15px;
+	}
+	.correct-answer-text {
+		color: #87d37b;
+	}
+</style>
+{/block}
+{block name="body"}
+	<div class="lui-content">
+		<div class="lui-result-nav">
+			我的成绩：<span class="correct_num">49</span>/<span class="total_num">50</span>
+		</div>
+		<!--
+		<div id="temp1" class="lui-result-temp">
+			<div id="best" class="lui-result-temp-main">
+				<div class="lui-result-temp-title">最佳得分知识点</div>
+				<div class="lui-result-ratio">
+					<div class="lui-ratio" style="width: 95%;"></div>
+				</div>
+				<div class="lui-result-score">
+					<span class="lui-subject">数轴</span>
+					<span class="lui-score">掌握 <span class="score-text">95%</span></span>
+				</div>
+			</div>
+			<div id="lift" class="lui-result-temp-main">
+				<div class="lui-result-temp-title">有待提升知识点</div>
+				<div class="lui-result-ratio">
+					<div class="lui-ratio" style="width: 20%;"></div>
+				</div>
+				<div class="lui-result-score">
+					<span class="lui-subject">有理数的加分</span>
+					<span class="lui-score">掌握 <span class="score-text">20%</span></span>
+				</div>
+			</div>
+		</div>
+		-->
+		<div id="temp2" class="lui-result-temp">
+			<div class="lui--resulttemp-left">
+				<div id="radar" class="radar" style="width: 100%;height: 320px;"></div>
+			</div>
+			<div class="lui--resulttemp-right">
+				<div id="best" class="lui-result-temp-main">
+					<div class="lui-result-temp-title">最佳得分知识点</div>
+					<div class="lui-result-ratio">
+						<div class="lui-ratio" style="width: 95%;"></div>
+					</div>
+					<div class="lui-result-score">
+						<span class="lui-subject">数轴</span>
+						<span class="lui-score">掌握 <span class="score-text">95%</span></span>
+					</div>
+				</div>
+				<div id="lift" class="lui-result-temp-main">
+					<div class="lui-result-temp-title">有待提升知识点</div>
+					<div class="lui-result-ratio">
+						<div class="lui-ratio" style="width: 20%;"></div>
+					</div>
+					<div class="lui-result-score">
+						<span class="lui-subject">有理数的加分</span>
+						<span class="lui-score">掌握 <span class="score-text">20%</span></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="lui-organ-info-main">
+			<div class="lui-organ-info">
+				<div class="lui-organ-logo">
+					<img src="/public/uploads/default-logo.png" />
+					<span class="organ-name">牛牛教育机构</span>
+				</div>
+				<div class="lui-organ-intr">
+					<p>1.暑假时间长达两个多月，许多孩子不知道怎么安排，听任其自由玩耍，经常出现各种状况。我们的宗旨是孩子既要玩好，同时还要在玩中学到知识。</p>
+					<p>1.暑假时间长达两个多月，许多孩子不知道怎么安排，听任其自由玩耍，经常出现各种状况。我们的宗旨是孩子既要玩好，同时还要在玩中学到知识。</p>
+				</div>
+			</div>
+			<div class="lui-organ-phone">
+				机构联系电话：<span class="organ-phone">020-888-25466</span>
+			</div>
+		</div>
+		<div class="lui-result-main">
+			<div class="lui-result-title">答题反馈</div>
+			<div class="lui-result-list">
+				<div class="lui-result-item">
+					<div class="lui-question-item">
+						1. 2008年9月25日至28日，我国成功实施了“神舟”七号载人飞船飞行。在刘伯明、景鹏涛的协助和合作下，翟志刚顺利完成了中国人的第一次太空行走。9月27日19时24分，“神舟”七号飞行到31圈时，成功释放了伴飞小卫星，若在无牵连的情况下伴飞的小卫星与“神舟”七号保持相对静止。说法中正确的是（ ）。
+					</div>
+					<div class="lui-option-item">
+						<p>A. 伴飞小卫星和“神舟”七号飞船有相同的角速度，伴飞小卫星和“神舟”七号飞船有相同的角速度。</p>
+						<p>B. 伴飞小卫星和“神舟”七号飞船有相同的角速度，伴飞小卫星和“神舟”七号飞船有相同的角速度。</p>
+						<p>C. 伴飞小卫星和“神舟”七号飞船有相同的角速度，伴飞小卫星和“神舟”七号飞船有相同的角速度。</p>
+						<p>D. 伴飞小卫星和“神舟”七号飞船有相同的角速度，伴飞小卫星和“神舟”七号飞船有相同的角速度。</p>
+					</div>
+					<div class="lui-answer-item">
+						<span class="my-answer">你的选择：<span class="my-answer-text lui-answer">A</span></span>
+						<span class="correct-answer">回答<span class="correct-answer-text">正确</span></span>
+					</div>
+				</div>
+				<div class="lui-result-item">
+					<div class="lui-question-item">
+						1. 2008年9月25日至28日，我国成功实施了“神舟”七号载人飞船飞行。在刘伯明、景鹏涛的协助和合作下，翟志刚顺利完成了中国人的第一次太空行走。9月27日19时24分，“神舟”七号飞行到31圈时，成功释放了伴飞小卫星，若在无牵连的情况下伴飞的小卫星与“神舟”七号保持相对静止。说法中正确的是（ ）。
+					</div>
+					<div class="lui-option-item">
+						<p>A. 伴飞小卫星和“神舟”七号飞船有相同的角速度，伴飞小卫星和“神舟”七号飞船有相同的角速度。</p>
+						<p>B. 伴飞小卫星和“神舟”七号飞船有相同的角速度，伴飞小卫星和“神舟”七号飞船有相同的角速度。</p>
+						<p>C. 伴飞小卫星和“神舟”七号飞船有相同的角速度，伴飞小卫星和“神舟”七号飞船有相同的角速度。</p>
+						<p>D. 伴飞小卫星和“神舟”七号飞船有相同的角速度，伴飞小卫星和“神舟”七号飞船有相同的角速度。</p>
+					</div>
+					<div class="lui-answer-item">
+						<span class="my-answer">你的选择：<span class="my-answer-text lui-error">B</span></span>
+						<span class="correct-answer">正确答案：<span class="correct-answer-text">A</span></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{/block}
+{block name="js"}
+<script src="__JS__/echarts/esl.js"></script>
+<script src="__JS__/echarts/echarts-all.js"></script>
+{/block}
+{block name="script"}
+<script>
+	var myChart = echarts.init(document.getElementById('radar'));
+	var option = {
+		polar : [
+			{
+				startAngle: 0,
+				name:{
+					show: true,
+					formatter: null,
+					textStyle: {
+						color:'#25272c'
+					}
+				},
+				indicator : [
+					{text : '平衡能力', max : 100},
+					{text : '空间想象能力', max : 100},
+					{text : '理解能力', max : 100},
+					{text : '阅读能力', max : 100},
+					{text : '推理能力', max : 100},
+					{text : '计算能力', max : 100}
+				],
+				radius : 130,
+				type: 'circle'
+			}
+		],
+		series : [
+			{
+				name: '能力雷达图',
+				type: 'radar',
+				itemStyle: {
+					normal: {
+						areaStyle: {
+							color: 'rgba(71,130,246,0.3)',
+							type: 'default'
+						},
+					},
+				},
+				symbolSize: [4,8],
+				data : [
+					{
+						value : [97, 42, 88, 94, 90, 86]
+					}
+				]
+			}
+		]
+	};
+	
+	var theme = {
+		color: [
+			'#4782f6'
+		],
+	};
+	
+	myChart.setOption(option);
+	myChart.setTheme(theme);
+</script>
+{/block}

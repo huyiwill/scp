@@ -1,0 +1,80 @@
+{extend name="base" /}
+{block name="body"}
+<style>
+	.organ-logo {
+		width: 50px;
+	}
+</style>
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">机构管理</li>
+            <li class=""><a href="{:url('admin/organ/add')}">添加机构</a></li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form layui-form-pane" action="{:url('admin/organ/index')}" method="get">
+                    <div class="layui-inline">
+						<label class="layui-form-label">机构等级</label>
+                        <div class="layui-input-inline">
+							<select id="level" name="level" lay-verify="required">
+                                <option value="0">全部</option>
+								{foreach name="level_list" item="vo"}
+                                <option value="{$key}" {if condition="$level==$key"} selected="selected"{/if}>{$vo}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+					<div class="layui-inline">
+						<label class="layui-form-label">机构状态</label>
+                        <div class="layui-input-inline">
+							<select id="validity" name="validity" lay-verify="required">
+                                <option value="0">全部</option>
+                                <option value="1" {if condition="$validity==1"} selected="selected"{/if}>有效</option>
+								<option value="2" {if condition="$validity==2"} selected="selected"{/if}>过期</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn">搜索</button>
+						<!--<button type="reset" class="layui-btn layui-btn-primary">重置</button>-->
+                    </div>
+                </form>
+                <hr>
+                <table class="layui-table">
+                    <thead>
+                    <tr>
+                        <th>编号</th>
+						<th>总机构名称</th>
+						<th>帐号等级</th>
+                        <th>有效期</th>
+                        <th>创建时间</th>
+                        <th width="200">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach name="list" item="vo"}
+                    <tr>
+                        <td>{$vo.org_id}</td>
+                        <td>{$vo.name}</td>
+						<td>{$vo.level_name}</td>
+						<td>{$vo.expiry_time_text}</td>
+						<td>{$vo.create_time_text}</td>
+                        <td>
+                            <a href="{:url('admin/organ/edit',['id'=>$vo['id']])}" class="layui-btn layui-btn-normal layui-btn-mini">编辑</a>
+							{if condition="$vo.validity == 0"}
+                            <a href="{:url('admin/organ/delete',['id'=>$vo['id']])}" class="layui-btn layui-btn-danger layui-btn-mini ajax-delete">删除</a>
+							{/if}
+                        </td>
+                    </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+                <!--分页-->
+                {$list->render()}
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

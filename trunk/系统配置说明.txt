@@ -1,0 +1,52 @@
+编辑器配置：http://192.168.0.73/scp/trunk/index.php/api/ueditor/index 替换 http://192.168.0.73/scp/trunk 成你的域名 文件路径 trunk\public\static\js\ueditor
+\ueditor.config.js
+
+
+数据库配置：trunk\application\database.php
+
+   // 数据库类型
+    'type'            => 'mysql',
+    // 服务器地址
+    'hostname'        => '127.0.0.1',
+    // 数据库名
+    'database'        => 'ruanyun',
+    // 用户名
+    'username'        => 'root',
+    // 密码
+    'password'        => '',
+    // 端口
+
+//项目配置
+路径：trunk\application\config.php
+// 应用命名空间
+'app_namespace'          => 'app',
+// 应用调试模式
+'app_debug'              => true,//false 关闭
+// 应用Trace
+'app_trace'              => true,//false 关闭
+//接口域名端口
+'MotikuApiHttp' => 'http://10.0.3.72:16590/',
+//本地文件上传路径
+'upload_path'   => 'public/uploads/',
+
+
+
+//数据表 os_examination 加字段 sharepic 图片分享
+SCP_Releasesql.sql           
+Rollback_SCP_Releasesql.sql
+
+//同步以前的答案 ps.若是多次同步会显示失败，但是数据是最新的同步数据
+同步链接 域名/index.php/index/index/sync.html
+
+
+//上传配置
+public\static\js\admin.js
+
+var layer = layui.layer,
+    element = layui.element(),
+    laydate = layui.laydate,
+    form = layui.form(),
+    prefix = ''; //配置上传路径
+
+
+

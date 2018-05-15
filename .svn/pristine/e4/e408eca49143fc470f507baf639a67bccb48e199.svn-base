@@ -1,0 +1,63 @@
+{extend name="base" /}
+{block name="body"}
+<style>
+
+</style>
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">全部记录</li>
+        </ul>
+        <div class="lui-table" style="height:auto;">
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th>答题时间</th>
+                    <th>题集名称</th>
+                    <th>学科</th>
+                    <th>适用年级</th>
+                    <th>成绩</th>
+                    <th>姓名</th>
+                    <th>联系方式 <input type="checkbox" name="" class="isphone" {if condition="$isphone eq 1"}checked="checked"{/if}></th>
+                    
+                    <th>答题详情</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="stulist" id="so"}
+                <tr>
+                    <td>{:date('Y-m-d H:i:s',$so['create_time'])}</td>
+                    <td>{:gdata('examination',$so['examination_id'],'name')}</td>
+                    <td>{$subject[$so.subject]['stageName']}{$subject[$so.subject]['name']}</td>
+                    <td>{$subject[$so.subject]['stageName']}</td>
+                    <td><font color="#4782f6">{:floatval($so.score)}/{:gdata('examination',$so['examination_id'],'exam_num')}</font></td>
+                    <td>{$so.answer_name?:'--'}</td>
+                    <td>{$so.answer_mobile?:'--'}</td>
+                    
+                    <td><a href="{:url('examination/studentresult','isrecord=1&id='.$so['id'])}" class="layui-btn layui-btn-normal layui-btn-mini">查看</a></td>
+                </tr>
+                {/volist}
+                <tr>              
+            </table>
+            {$pshow}
+            <div style="height:20px; clear:both;"></div>
+        </div>
+  </div>
+
+</div>
+{/block}
+{block name="script"}
+ <script>
+  $(".isphone").click(function(e) {
+    var isck = $(this).is(":checked");
+	var uri  = '{:url("orgadmin/examination/examrecord","","")}';
+	var page = '{$page}';
+	if ( isck ) {
+	  window.location.href = uri+'/isphone/1';
+	} else {
+	  window.location.href = uri+'/isphone/0';
+	}
+  });
+ </script>
+{/block}

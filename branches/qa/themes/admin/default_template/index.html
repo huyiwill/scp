@@ -1,0 +1,53 @@
+{extend name="base" /}
+{block name="body"}
+<style>
+	.form-container .edui-editor {
+		margin: 0;
+	}
+</style>
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">默认宣传模版</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form form-container" action="{:url('admin/DefaultTemplate/edit')}" method="post">
+					<input name="id" type="hidden" value="{$data.id}"/>
+					
+					<div class="layui-form-item">
+                        <label class="layui-form-label">宣传模版</label>
+                        <div class="layui-input-block">
+                            <textarea id="default-template" name="body" placeholder="请编辑宣传模版..." class="layui-textarea" >{$data.body}</textarea>
+                        </div>
+                    </div>
+					
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="*">保存</button>
+                            <button type="reset" class="layui-btn layui-btn-primary reset">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="js"}
+<script src="__JS__/ueditor/ueditor.config.js"></script>
+<script src="__JS__/ueditor/ueditor.all.js"></script>
+{/block}
+{block name="script"}
+<script>
+	var ue = UE.getEditor('default-template');
+	ue.ready(function() {
+		ue.setHeight(350);
+		$('.reset').on('click',function(){
+			ue.setContent('');
+			$('textarea[name="body"]').html('');
+		})
+	});
+</script>
+{/block}

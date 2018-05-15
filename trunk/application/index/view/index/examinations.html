@@ -1,0 +1,86 @@
+{extend name="base" /}
+{block name="css"}
+<style>
+	.lui-nav {background-color: #f3f3f3;position: fixed;width: 100%;top: 60px;z-index: 10;}
+	.lui-content {padding: 112px 0 45px;}
+	.lui-nav-icon {padding: 15px;display: inline-block;transition: all .35s;}
+	.lui-nav-icon:active {background-color: #ddd;}
+	.lui-nav-icon img {width: 10px;vertical-align: middle;}
+	.lui-nav-title {display: inline-block;vertical-align: middle;}
+	.lui-nav-title span {font-size: 16px;color: #4782f6;margin-right: 15px;}
+	.lui-list {margin: 0;padding: 0;list-style: none;}
+	li.lui-list-item {padding: 0 15px;transition: all .35s;}
+	li.lui-list-item:active {background-color: #f1f1f1;}
+	.lui-list-item-inner {border-bottom: 1px solid #edeff0;}
+	.lui-list-item-text {padding: 20px 0;display: inline-block;font-size: 16px;color: #25272c;}
+	.lui-list-item-right {float: right;position: relative;top: 20px;color: #aaa;font-size: 16px;}
+	.lui-list-item-right span {color: #4782f6;}
+	.no-data {font-size: 24px;text-align: center;color: #aaa;padding-top: 50px;}
+	@media (max-width: 320px) {
+		.lui-nav {top: 50px;}
+		.lui-nav-icon img {width: 8px;}
+		.lui-nav-icon {padding: 10px 15px;}
+		.lui-nav-title span {font-size: 14px;}
+		.lui-content {padding-top: 91px;padding-bottom: 40px;}
+		.lui-list-item-text {font-size: 14px;padding: 15px 0;}
+		.lui-list-item-right {font-size: 14px;top: 15px;}
+	}
+</style>
+{/block}
+{block name="body"}
+	<div class="lui-nav">
+		<a name="back" onclick="history.back();" class="lui-nav-icon">
+			<img src="__UPLOAD__/system/icon-back.png" />
+		</a>
+		<div class="lui-nav-title">
+			<span class="subject-text">{$data.subject}</span>
+			<span class="grade-text">{$data.grade}</span>
+		</div>
+	</div>
+	<div class="lui-content">
+		<ul class="lui-list">
+			{if condition="$data.list"}
+			{foreach name="data.list" item="vo"}
+			<li class="lui-list-item" data-url="{:url('Index/index/questions',['org_id'=>$org_info.org_id,'examinations_id'=>$vo.id])}">
+				<div class="lui-list-item-inner">
+					<div class="lui-list-item-text">{$vo.name|msubstr=0,15,'utf-8'}</div>
+					<div class="lui-list-item-right">共<span>{$vo.exam_num}</span>题</div>
+				</div>
+			</li>
+			{/foreach}
+			{else/}
+			<div class="no-data">
+				暂无数据
+			</div>
+			{/if}
+		</ul>
+	</div>
+{/block}
+{block name="js"}
+	
+{/block}
+{block name="script"}
+<script>
+	$(function(){
+		var org_level = '{$org_info.level}';
+		var status = '{$data.status}';
+		
+		if(status == '2'){
+			var msg = '{$data.msg}';
+			$.showForbid(msg);
+		}
+		
+		if(org_level == 4){
+			$('.lui-content').css('padding-bottom',0);
+		}
+		
+		$('.lui-list-item').on('click',function(){
+			var url = $(this).attr('data-url');
+			location.href = url;
+		})
+		
+		
+	})
+</script>
+{include file="weixin" /}
+{/block}

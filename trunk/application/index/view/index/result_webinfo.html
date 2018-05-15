@@ -1,0 +1,326 @@
+{extend name="webbase" /}
+{block name="css"}
+<link rel="stylesheet" href="__CSS__/ruanyuan.css">
+<style>
+body,div{ margin:0; padding:0;}
+ul,li,dl,dd,a{ list-style:none; text-decoration:none;}
+.e-tel{ height:60px; text-align:center; line-height:60px; font-size:18px; color:#333; margin:0; padding:0; border-top:dashed 1px #dcdcdc; margin-top:15px;}
+	.layui-tip-p{ width:100%; text-align:center; color:#333; font-size:14px; width:100%; display:block;}
+	.layui-layer-btn0{ background:#1aa194 !important;}
+	.layui-layer-btn{ padding-bottom:5px !important;}
+	.layui-layer-btn a{ height:36px !important; line-height:36px !important;}
+	.layui-divs{ width:100%; height:auto; overflow:hidden;}
+	.layui-divs h4{ width:100%; text-align:center; font-size:12px; color:#999; font-weight:normal; text-align:center; margin:20px auto 16px auto;}
+	._input{ width:300px; height:38px; padding:0px 10px; box-sizing:border-box; border:1px solid #dcdcdc; color:#ccc; font-size:14px; outline-style:none; display:block; margin:0 auto 10px auto;font-family:"微软雅黑";}
+	.layui-layer-btn0{ margin:0; padding:0;}
+</style>
+{/block}
+{block name="body"}
+<div class="ui-mask">
+ <img src="__IMAGES__/pc.png" width="100%">
+</div>
+<div class="examBoxs lui-content" style="display:none;">
+ <div class="examBoxs_left">
+     <div class="left_Info" style="margin-top:30px;">
+         <div class="rycg_warp">
+ 	
+            <div class="title_div">{$info.answer_name}-{$subject[$info['subject']]['stageName']}{$subject[$info['subject']]['name']}-{:gdata('examination',$info['examination_id'],'name')}</div>
+            <div class="csbaseinfo">题目数量：{:gdata('examination',$info['examination_id'],'exam_num')}&nbsp;&nbsp;知识点数量：{$tknowcount?:0}&nbsp;&nbsp;综合难度系数：
+            {if condition="$level eq 1"}容易{/if}
+            {if condition="$level eq 2"}较易{/if}
+            {if condition="$level eq 3"}一般{/if}
+            {if condition="$level eq 4"}较难{/if}
+            {if condition="$level eq 5"}困难{/if}
+            </div>
+            <h3 class="cj_h3">知识点占比</h3>
+    <div id="container" style="min-width:300px;height:300px"></div>
+    <div class="cj_score">
+    	<ul>
+        	<li>
+                <p><b>{:floatval($info.score)}</b>/{$exam.exam_num}</p>
+                <p>我的成绩</p>
+            </li>
+            <li style="border-left:1px solid #dedede;">
+                <p><b>{$avg2?:0}</b>/{$exam.exam_num}</p>
+                <p>平均成绩</p>
+            </li>
+        </ul>
+    </div>
+    <div class="empty_line"></div>
+    <h3 class="cj_h3">当前学生排名</h3>
+    <!--<div id="pyramid" style="width:500px; height: 300px; margin: 0 auto"></div>-->
+    <div class="ui-jzt">
+     {volist name="paimingjson" id="pm" key="p"}
+      <div class="ui-jzt-div ui-jzt-{$p}"><img src="__IMAGES__/{$p}.png">
+       <div class="ui-jzt-line ui-jzt-l{$p}" data-top="23" data-active="{$pm.active}"><span class="ui-jzt-solid"></span><span class="line-main"></span><span class="line-text">{$pm.name}</span></div>
+      </div>
+     {/volist}
+    </div>
+    
+ </div>
+         <div class="series_title" style="border-bottom:none;"><b></b>知识点掌握分析</div>
+<table class="layui-table" style="margin:0;">
+    <thead>
+        <tr>
+            <td width="20%" align="center">掌握分析</td>
+            <td width="20%" align="center">二级知识点</td>
+            <td width="20%" align="center">三级知识点</td>
+            <td width="20%" align="center">难度系数</td>
+            <td width="20%" align="center">题目数</td>
+        </tr> 
+    </thead>
+    {if condition="$KnowledgePointMasterAnalysis neq ''"}
+    {volist name="KnowledgePointMasterAnalysis" id="kw"}
+    <tr>
+        <td align="center">
+         {if condition="$kw->MasterAnalysis eq 1"}已掌握{/if}
+         {if condition="$kw->MasterAnalysis eq 2"}部分掌握{/if}
+         {if condition="$kw->MasterAnalysis eq 3"}未掌握{/if}
+        </td>
+        <td align="center">{$kw->ParentKnowledgePointName?:'--'}</td>
+        <td align="center">{$kw->KnowledgePointName?:'--'}</td>
+        <td align="center">
+         {if condition="$kw->KnowledgePointLevel eq 1"}容易{/if}
+         {if condition="$kw->KnowledgePointLevel eq 2"}较易{/if}
+         {if condition="$kw->KnowledgePointLevel eq 3"}一般{/if}    
+         {if condition="$kw->KnowledgePointLevel eq 4"}较难{/if}    
+         {if condition="$kw->KnowledgePointLevel eq 5"}困难{/if}        
+        </td>
+        <td align="center">{$kw->NumberOfQuestion}</td>
+    </tr>
+    {/volist}
+    {/if}
+ </table>
+ 
+         <div class="series_title" style=" margin:10px auto;"><b></b>答题记录</div>
+         
+ {if condition="$tobj neq ''"}
+ {volist name="tobj" id="t" key="tt"}
+ <div class="dati_items" id="dati_items_{$t['QuestionId']}">
+ 	<dl class="item_dl">
+    	<dt class="sortpadd"><span class="sort_tag">{$tt}</span> {$t.QuestionContent|deletep}</dt>
+        {volist name="t['Options']" id="ot"}
+         <dd class="sortpadd"><span class="sort_tag">{$ot['QuestionOptionId']}</span> {$ot['QuestionOptionText']}</dd>
+        {/volist}
+    </dl>
+
+    <div class="you_answer">你的选择：<span>
+      {php}
+      $ans = ganswer($question_reult,$t['QuestionId']);
+      if ( $ans == $t['Answer'] ) {
+        echo $ans;
+      } else {
+        echo '<font color="#f95d60">'.$ans.'</font>'; 
+      }
+     {/php}
+    
+    </span> , 正确答案：<span>{$t.Answer}</span> <button class="jiexi_btn" type="button">展开解析<img src="__IMAGES__/zhankai_icon_s.png" /></button></div>
+    <div class="answer_jiexi" style="display:none;">
+    	<h2 class="jiexi_h2">解析</h2>
+        <div class="jiexi_info">{$t.Analysis}</div>
+        <div class="hide_jiexi"><img src="__IMAGES__/ry_icon04.png" height="14" width="20" /></div>
+    </div>
+ </div>
+ {/volist}
+ {/if}
+
+         
+     </div>
+     <div class="left_Info" style="margin-top:15px; margin-bottom:50px;">
+        <div class="org_namebox" style="height:54px; line-height:54px; display:none;"><img src="{$organ['logo']}" height="50" /> <span style=" ">{$organ['name']}</span></div>
+        <!--<div class="empty_line"></div>-->
+        <div class="org_introbox">
+         {$organ.pub_text|htmlspecialchars_decode}
+        </div>
+        
+
+        <div class="e-tel"><img src="__IMAGES__/tel.jpg"> 机构联系电话{$organ['mobile']}</div>
+     </div>
+ </div>
+ <div class="examBoxs_right" id="sidebar">
+     <div class="answer_card">
+        <h2>答题卡</h2>
+        <div class="timu_xuhao">
+          {if condition="$QuestionResult neq ''"}
+           {volist name="QuestionResult" id="qr" key="q"}
+            {if condition="$qr->IsCorrect eq 1"}
+              <a href="#dati_items_{$qr->QuestionId}" class="green">{$q}</a>
+            {else/}
+              {if condition="ganswer($question_reult,$qr->QuestionId) eq '未填'"}
+               <a href="#dati_items_{$qr->QuestionId}">{$q}</a>
+              {else/}
+               <a href="#dati_items_{$qr->QuestionId}" class="red">{$q}</a>
+              {/if}
+            {/if}
+            {/volist}
+           {/if}
+        </div>
+        <a href="{:url('index/questions','examinations_id='.$info['examination_id'].'&org_id='.$orgid.'&isrepeat=1')}" class="answer_again_a">再答一次</a>
+     </div>
+ </div>
+</div> 
+
+
+{/block}
+{block name="js"}
+<script src="__JS__/highcharts/highcharts.js"></script>
+<script src="__JS__/highcharts/funnel.js"></script>
+<script src="__JS__/portamento.js"></script>
+<script>
+ 
+ 
+	$(function(){
+		var is_verify = '{$exam.is_verify}';
+		var answer_name = '{$answer_name}';
+		var answer_mobile = '{$answer_mobile}';
+		var eid = '{$id}';
+		if(is_verify == 2 && answer_name == '' && answer_mobile == ''){
+		  $(".ui-mask").show();
+		  $(".layui-body").hide().remove('*');
+			var verifyTip = layer.open({
+				type:1,
+				closeBtn:0,
+				skin:'demo-class',
+				offset: 'auto',
+				title: '提示',
+				btn: ['确定提交'],
+				content: '<div class="layui-divs"><h4>填写联系方式，即刻查看测评报告</h4><input type="text" placeholder="请输入姓名" class="_input answer_name"><input type="text" placeholder="请输入手机号码，必填" class="_input answer_mobile"></div>',
+				area: ['320px', '260px'],
+				yes: function(index){
+					answer_name   = $('.answer_name').val();
+					answer_mobile = $('.answer_mobile').val();
+					if(answer_name==''){
+					  layer.tips('请输入姓名', '.answer_name');return false;
+					}
+					if ( answer_name.length > 50 ) {
+					  layer.tips('最大长度为50字符', '.answer_name');return false;
+					} 
+					if(answer_mobile==''){
+					  layer.tips('请输入手机号码', '.answer_mobile');return false;
+					}
+					if(!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(answer_mobile))){ 
+					  layer.tips("请输入正确的手机号码", '.answer_mobile'); return false; 
+					} 
+					var loading = layer.load(1,{shade: [0.5,'#000']})
+					$.ajax({
+						url: "{:url('index/Index/save_user2')}",
+						type: "post",
+						dataType: "json",
+						cache: false,
+						data: {
+							answer_name: answer_name,
+							answer_mobile: answer_mobile,
+							eid : eid
+						},
+						success: function (info) {
+							layer.close(loading);
+							if(info.status == 1){
+								window.location.reload();
+							}else{
+								layer.msg(info.msg); 
+							}
+						}
+					});
+				}
+			})
+			$(".layui-layer-content").height(149);
+		} else {
+		  $(".lui-content").show();
+		}
+	});
+
+  function showjzt(){
+	var left = parseInt($('.ui-jzt').width()/2);
+	$(".ui-jzt .ui-jzt-line").each(function(iq, eq) {
+	  var t = $(this).data('top');
+	  var active = $(this).data('active');
+	  if ( active ) {
+		$(this).show().css({'top':t,'left':left});
+	  } else {
+		$(this).hide().css({'top':t,'left':left});
+	  }
+	}); 
+  }
+ $(document).ready(function(e) {
+	 showjzt();
+	 $('#sidebar').portamento({disableWorkaround: true});
+	 $('.dati_items').click(function(){
+		 $('.dati_items').removeClass('dati_hover')
+		 $(this).addClass('dati_hover');
+	 })
+	 // 收起  展开
+	 $('.jiexi_btn').click(function(){
+		 if($(this).parent().parent().find('.answer_jiexi').is(":visible")){
+			 $(this).html('展开解析<img src="__IMAGES__/zhankai_icon_s.png" />');
+			 $(this).parent().parent().find('.answer_jiexi').hide();
+		 }else{
+			 $(this).html('收起解析<img src="__IMAGES__/shousuo_icon_s.png" />');
+			 $(this).parent().parent().find('.answer_jiexi').show();
+		 }
+	 })
+	 // 收起
+	 $('.hide_jiexi').click(function(){
+		 $(this).parent().hide();
+	 	$(this).parent().parent().find('.jiexi_btn').html('展开解析<img src="__IMAGES__/zhankai_icon_s.png" />');
+	 })
+ });
+ 
+	var chart = null;
+	$(function () {
+		$('#container').highcharts({
+			chart: {
+				plotShadow: false,
+				spacing : [0, 0 , 0, 0]
+			},
+			colors: ['#c23531', '#2f4554', '#9fdabf'],
+			title: {
+				floating:true,
+				text: '',
+				style:{ "color": "#666", "fontSize": "13px" },
+			},
+			tooltip: {
+				pointFormat: '{series.name}: {point.percentage:.1f}%'
+			},
+			plotOptions: {
+				pie: {
+					allowPointSelect: true,
+					cursor: 'pointer',
+					dataLabels: {
+						enabled: true,
+						format: '<font color="#666666">{point.name}</font>: {point.percentage:.1f} %',
+						style: {
+							color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || '#666666',
+							fontWeight:"normal"
+						}
+					},
+					point: {
+						events: {
+							mouseOver: function(e) {
+								chart.setTitle({
+									text: e.target.name+ '\t'+ e.target.y + ' %'
+								});
+							}
+						}
+					},
+				}
+			},
+			series: [{
+				type: 'pie',
+				innerSize: '60%',
+				name: '占比',
+				data: {$KnowledgePointScoresx}
+			}]
+		}, function(c) {
+			// 环形图圆心
+			var centerY = c.series[0].center[1],
+				titleHeight = parseInt(c.title.styles.fontSize);
+			c.setTitle({
+				y:centerY + titleHeight/2
+			});
+			chart = c;
+		});
+		//金字塔
+	});
+</script>
+{include file="weixin" /}
+{/block}
